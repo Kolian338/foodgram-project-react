@@ -3,7 +3,7 @@ POST http://127.0.0.1:8000/api/auth/token/login/
 Content-Type: application/json
 
 {
-    "password": "3385105aq",
+    "password": "123456qwertY!",
     "username": "test"
 }
 
@@ -13,24 +13,24 @@ Content-Type: application/json
 
 {
   "email": "test@ya.ru",
-  "username": "test4",
+  "username": "test1",
   "first_name": "testname1",
   "last_name": "lastname1",
-  "password": "123456qwertY"
+  "password": "123456qwertY!"
 }
 
 ### get users list
 GET http://127.0.0.1:8000/api/users/
 Content-Type: application/json
-Authorization: Token 1799e42461e167bd7d001e08e650eca169f8d308
+Authorization: Token c9e104481c7672bd792f6999535af3c63bd10b5f
 
 ### profile user
-GET http://127.0.0.1:8000/api/users/1/
+GET http://127.0.0.1:8000/api/users/16/
 Content-Type: application/json
 
 
 ### get current user
 GET http://127.0.0.1:8000/api/users/me/
 Content-Type: application/json
-Authorization: Token 1799e42461e167bd7d001e08e650eca169f8d308
+Authorization: Token c9e104481c7672bd792f6999535af3c63bd10b5f
 
