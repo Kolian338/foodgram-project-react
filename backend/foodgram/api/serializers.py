@@ -1,9 +1,9 @@
-from djoser.serializers import UserSerializer
+from djoser.serializers import UserSerializer, UserCreateSerializer
 from users.models import User
 from rest_framework import serializers
 
 
-class CustomUserSerializer(serializers.ModelSerializer):
+class CustomUserSerializer(UserCreateSerializer):
     """
     Кастомный сериализатор от модели.
     """
