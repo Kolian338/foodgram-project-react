@@ -13,3 +13,35 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.username
+
+
+class Follow(models.Model):
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='follower',
+        verbose_name='Подписчик'
+    )
+    following = models.ForeignKey(
+        User, on_delete=models.SET_NULL, related_name='following',
+        blank=True, null=True,
+        verbose_name='Подписка'
+    )
+
+    class Meta:
+        """
+        - Проверка составной уникальности в UniqueConstraint
+        - Ограничение подписки на самого себя в CheckConstraint
+        """
+
+        constraints = [
+            models.UniqueConstraint(
+                fields=['user', 'following'],
+                name='unique_user_following'
+            ),
+            models.CheckConstraint(
+                name='cant_subscribe_to_yourself',
+                check=~models.Q(user=models.F('following')),
+            ),
+        ]
+
+    def __str__(self):
+        return f'{self.user} {self.following}'
