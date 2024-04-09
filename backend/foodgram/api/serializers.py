@@ -9,6 +9,11 @@ class IsSubscribedMixin(metaclass=serializers.SerializerMetaclass):
     is_subscribed = serializers.SerializerMethodField()
 
     def get_is_subscribed(self, obj):
+        """
+        Подписан ли текущий пользователь на переданного.
+        obj - переданный юзер в url
+        current_user - юзер из запроса
+        """
         current_user = self.context.get('request').user
         return (current_user.is_authenticated
                 and Subscription.objects.filter(
@@ -74,6 +79,6 @@ class SubscribeWriteSerializer(IsSubscribedMixin, serializers.ModelSerializer):
                 'username': user.username,
                 "first_name": user.first_name,
                 "last_name": user.last_name,
-                "is_subscribed": self.get_is_subscribed(instance)
+                "is_subscribed": self.get_is_subscribed(instance.author)
             }
         return representation
