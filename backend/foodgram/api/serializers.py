@@ -11,7 +11,7 @@ class IsSubscribedMixin(metaclass=serializers.SerializerMetaclass):
     def get_is_subscribed(self, obj):
         """
         Подписан ли текущий пользователь на переданного.
-        obj - объект автора
+        obj - объект автора.
         """
         current_user = self.context.get('request').user
         return (current_user.is_authenticated
