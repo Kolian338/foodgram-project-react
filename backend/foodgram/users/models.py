@@ -15,15 +15,14 @@ class User(AbstractUser):
         return self.username
 
 
-class Follow(models.Model):
+class Subscription(models.Model):
     user = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name='follower',
+        User, on_delete=models.CASCADE, related_name='user',
         verbose_name='Подписчик'
     )
-    following = models.ForeignKey(
-        User, on_delete=models.SET_NULL, related_name='following',
-        blank=True, null=True,
-        verbose_name='Подписка'
+    author = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='author',
+        verbose_name='Автор'
     )
 
     class Meta:
@@ -34,14 +33,14 @@ class Follow(models.Model):
 
         constraints = [
             models.UniqueConstraint(
-                fields=['user', 'following'],
-                name='unique_user_following'
+                fields=['user', 'author'],
+                name='unique_user_author'
             ),
             models.CheckConstraint(
                 name='cant_subscribe_to_yourself',
-                check=~models.Q(user=models.F('following')),
+                check=~models.Q(user=models.F('author')),
             ),
         ]
 
     def __str__(self):
-        return f'{self.user} {self.following}'
+        return f'{self.user} {self.author}'

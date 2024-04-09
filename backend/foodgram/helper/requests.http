@@ -3,8 +3,8 @@ POST http://127.0.0.1:8000/api/auth/token/login/
 Content-Type: application/json
 
 {
-    "password": "123456qwertY!!",
-    "username": "test2"
+    "password": "123456qwertY!",
+    "username": "test"
 }
 
 ### delete token auth
@@ -23,7 +23,7 @@ Content-Type: application/json
 
 {
   "email": "test@ya.ru",
-  "username": "test7",
+  "username": "test4",
   "first_name": "testname1",
   "last_name": "lastname1",
   "password": "123456qwertY!"
@@ -32,16 +32,17 @@ Content-Type: application/json
 ### get users list
 GET http://127.0.0.1:8000/api/users/
 Content-Type: application/json
-Authorization: Token 1ff3793e8ea6a0ade3641253e4c2a996ca10167e
+Authorization: Token ca091311bf78bf0fd5d32dde2cfaa35f054a3765
 
 ### profile user
 GET http://127.0.0.1:8000/api/users/1/
 Content-Type: application/json
+Authorization: Token ca091311bf78bf0fd5d32dde2cfaa35f054a3765
 
 ### get current user
 GET http://127.0.0.1:8000/api/users/me/
 Content-Type: application/json
-Authorization: Token 1ff3793e8ea6a0ade3641253e4c2a996ca10167e
+Authorization: Token ca091311bf78bf0fd5d32dde2cfaa35f054a3765
 
 ### set passworc
 POST http://127.0.0.1:8000/api/users/set_password/
@@ -52,3 +53,8 @@ Authorization: Token 1ff3793e8ea6a0ade3641253e4c2a996ca10167e
   "new_password": "123456qwertY!!",
   "current_password": "123456qwertY!!"
 }
+
+### subscribe on user
+POST http://127.0.0.1:8000/api/users/1/subscribe/
+Content-Type: application/json
+Authorization: Token ca091311bf78bf0fd5d32dde2cfaa35f054a3765
