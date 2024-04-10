@@ -55,6 +55,6 @@ Authorization: Token 1ff3793e8ea6a0ade3641253e4c2a996ca10167e
 }
 
 ### subscribe on user
-POST http://127.0.0.1:8000/api/users/1/subscribe/
+POST http://127.0.0.1:8000/api/users/3/subscribe/
 Content-Type: application/json
 Authorization: Token ca091311bf78bf0fd5d32dde2cfaa35f054a3765

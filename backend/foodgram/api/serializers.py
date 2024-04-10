@@ -1,4 +1,6 @@
 from djoser.serializers import UserSerializer, UserCreateSerializer
+from rest_framework.validators import UniqueTogetherValidator
+
 from users.models import User, Subscription
 from rest_framework import serializers
 
@@ -66,6 +68,11 @@ class SubscribeWriteSerializer(IsSubscribedMixin, serializers.ModelSerializer):
             'author': {'write_only': True},
             'user': {'write_only': True},
         }
+
+    def validate(self, attrs):
+        if attrs['author'] == attrs['user']:
+            raise serializers.ValidationError('Подписка на самого себя', code='error')
+        return attrs
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
