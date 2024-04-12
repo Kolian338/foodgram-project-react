@@ -4,7 +4,7 @@ Content-Type: application/json
 
 {
     "password": "123456qwertY!",
-    "username": "test"
+    "username": "test4"
 }
 
 ### delete token auth
@@ -55,6 +55,19 @@ Authorization: Token 1ff3793e8ea6a0ade3641253e4c2a996ca10167e
 }
 
 ### subscribe on user
-POST http://127.0.0.1:8000/api/users/3/subscribe/
+POST http://127.0.0.1:8000/api/users/2/subscribe/
+Content-Type: application/json
+Authorization: Token ca091311bf78bf0fd5d32dde2cfaa35f054a3765
+
+
+
+### unsubscribe on user
+DELETE http://127.0.0.1:8000/api/users/1/subscribe/
+Content-Type: application/json
+Authorization: Token ca091311bf78bf0fd5d32dde2cfaa35f054a3765 # test
+#Authorization: Token 7dda1a9f4e5bc8b08f36da4aeb39fc03c4802f94 # test4
+
+### get list subscribtions
+GET http://127.0.0.1:8000/api/users/subscriptions/
 Content-Type: application/json
 Authorization: Token ca091311bf78bf0fd5d32dde2cfaa35f054a3765

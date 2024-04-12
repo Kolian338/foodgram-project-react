@@ -3,11 +3,12 @@ from djoser.views import UserViewSet
 
 from api.permissions import AuthenticatedUser
 from rest_framework.permissions import AllowAny, IsAuthenticatedOrReadOnly
-from api.serializers import CustomUserCreateSerializer, SubscribeWriteSerializer
-from users.models import User
+from api.serializers import CustomUserCreateSerializer, SubscribeSerializer
+from users.models import User, Subscription
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework import status
 
 
 class CustomUserViewSet(UserViewSet):
@@ -25,27 +26,44 @@ class CustomUserViewSet(UserViewSet):
         return super().get_permissions()
 
     @action(
-        methods=['post', 'delete'], detail=True,
+        methods=['post'], detail=True,
     )
     def subscribe(self, request, id=None):
         """
         - Подписка на юзера.
         - Удаление подписки.
         """
-        if request.method == 'POST':
-            author = get_object_or_404(
-                User, pk=id
-            )
-            serializer = SubscribeWriteSerializer(
-                data={'author': author.id, 'user': request.user.id},
-                context={'request': request}
-            )
-            serializer.is_valid(raise_exception=True)
-            serializer.save()
-            return Response(serializer.data)
+        author = get_object_or_404(
+            User, pk=id
+        )
+
+        serializer = SubscribeSerializer(
+            data={'author': author.id, 'user': request.user.id},
+            context={'request': request}
+        )
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
+
+    @subscribe.mapping.delete
+    def unsubscribe(self, request, id=None):
+        subscription = get_object_or_404(
+            Subscription, author_id=id, user_id=request.user.id
+        )
+        subscription.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(
         methods=['get'], detail=False,
     )
-    def subscriptions(self):
-        ...
+    def subscriptions(self, request):
+        subscribers = User.objects.filter(
+            author__user_id=request.user.id
+        )
+
+        page = self.paginate_queryset(subscribers)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+        serializer = self.get_serializer(subscribers, many=True)
+        return Response(serializer.data)

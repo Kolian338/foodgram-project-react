@@ -1,5 +1,6 @@
 from djoser.serializers import UserSerializer, UserCreateSerializer
 from rest_framework.validators import UniqueTogetherValidator
+from rest_framework import request
 
 from users.models import User, Subscription
 from rest_framework import serializers
@@ -58,7 +59,7 @@ class RecipeSerializer(serializers.ModelSerializer):
     ...
 
 
-class SubscribeWriteSerializer(IsSubscribedMixin, serializers.ModelSerializer):
+class SubscribeSerializer(IsSubscribedMixin, serializers.ModelSerializer):
     recipes = ...
 
     class Meta:
@@ -70,8 +71,10 @@ class SubscribeWriteSerializer(IsSubscribedMixin, serializers.ModelSerializer):
         }
 
     def validate(self, attrs):
-        if attrs['author'] == attrs['user']:
-            raise serializers.ValidationError('Подписка на самого себя', code='error')
+        if self.context['request'].method == 'POST':
+            if attrs['author'] == attrs['user']:
+                raise serializers.ValidationError('Подписка на самого себя',
+                                                  code='error')
         return attrs
 
     def to_representation(self, instance):
