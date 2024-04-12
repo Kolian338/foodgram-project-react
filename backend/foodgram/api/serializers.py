@@ -3,6 +3,7 @@ from rest_framework.validators import UniqueTogetherValidator
 from rest_framework import request
 
 from users.models import User, Subscription
+from recipes.models import Tag
 from rest_framework import serializers
 
 
@@ -91,3 +92,11 @@ class SubscribeSerializer(IsSubscribedMixin, serializers.ModelSerializer):
                 "is_subscribed": self.get_is_subscribed(instance.author)
             }
         return representation
+
+
+class TagSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tag
+        fields = (
+            '__all__'
+        )

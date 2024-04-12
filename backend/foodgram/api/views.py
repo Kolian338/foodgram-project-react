@@ -3,8 +3,10 @@ from djoser.views import UserViewSet
 
 from api.permissions import AuthenticatedUser
 from rest_framework.permissions import AllowAny, IsAuthenticatedOrReadOnly
-from api.serializers import CustomUserCreateSerializer, SubscribeSerializer
+from api.serializers import CustomUserCreateSerializer, SubscribeSerializer, \
+    TagSerializer
 from users.models import User, Subscription
+from recipes.models import Tag
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -67,3 +69,8 @@ class CustomUserViewSet(UserViewSet):
             return self.get_paginated_response(serializer.data)
         serializer = self.get_serializer(subscribers, many=True)
         return Response(serializer.data)
+
+
+class TagViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Tag.objects.all()
+    serializer_class = TagSerializer
