@@ -1,9 +1,14 @@
+import base64
+from django.core.files.base import ContentFile
+
 from djoser.serializers import UserSerializer, UserCreateSerializer
 from rest_framework.validators import UniqueTogetherValidator
 from rest_framework import request
 
 from users.models import User, Subscription
-from recipes.models import Tag
+from recipes.models import (
+    Tag, Ingredient, Recipe, RecipeIngredient, RecipeTag
+)
 from rest_framework import serializers
 
 
@@ -22,6 +27,35 @@ class IsSubscribedMixin(metaclass=serializers.SerializerMetaclass):
                 and Subscription.objects.filter(
                     author__id=obj.id, user_id=current_user.id
                 ).exists())
+
+
+class IsFavoridtedMixin(metaclass=serializers.SerializerMetaclass):
+    is_favorited = serializers.SerializerMethodField()
+
+    def get_is_favorited(self, obj):
+        return True
+
+
+class IsInShoppingCartMixin(metaclass=serializers.SerializerMetaclass):
+    is_in_shopping_cart = serializers.SerializerMethodField()
+
+    def get_is_in_shopping_cart(self, obj):
+        return True
+
+
+class Base64ImageField(serializers.ImageField):
+    """
+    Кастомное поле для декодирования картинки.
+    """
+
+    def to_internal_value(self, data):
+        if isinstance(data, str) and data.startswith('data:image'):
+            format, imgstr = data.split(';base64,')
+            ext = format.split('/')[-1]
+
+            data = ContentFile(base64.b64decode(imgstr), name='temp.' + ext)
+
+        return super().to_internal_value(data)
 
 
 class CustomUserCreateSerializer(UserCreateSerializer):
@@ -54,10 +88,6 @@ class CustomUserSerializer(IsSubscribedMixin, CustomUserCreateSerializer):
             'is_subscribed',
         )
         read_only_fields = ('id',)
-
-
-class RecipeSerializer(serializers.ModelSerializer):
-    ...
 
 
 class SubscribeSerializer(IsSubscribedMixin, serializers.ModelSerializer):
@@ -98,5 +128,79 @@ class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
         fields = (
-            '__all__'
+            'name', 'color', 'slug'
         )
+
+
+class IngredientSerializer(serializers.ModelSerializer):
+    amount = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Ingredient
+        fields = (
+            'name', 'measurement_unit', 'amount',
+        )
+
+    def get_amount(self, obj):
+        return 1
+
+
+class RecipeIngredientWriteSerializer(serializers.ModelSerializer):
+    id = serializers.PrimaryKeyRelatedField(queryset=Ingredient.objects.all())
+    amount = serializers.IntegerField()
+
+    class Meta:
+        model = Ingredient
+        fields = (
+            'id', 'amount'
+        )
+
+
+class RecipeReadSerializer(
+    IsFavoridtedMixin, IsInShoppingCartMixin, serializers.ModelSerializer
+):
+    """Сериализатор для чтения /api/recipes/"""
+    tags = TagSerializer(many=True)
+    author = CustomUserSerializer()
+    ingredients = IngredientSerializer(many=True)
+
+    class Meta:
+        model = Recipe
+        fields = (
+            'id', 'tags', 'author', 'ingredients', 'is_favorited',
+            'is_in_shopping_cart', 'name', 'image', 'text', 'cooking_time',
+        )
+
+
+class RecipeWriteSerializer(serializers.ModelSerializer):
+    ingredients = RecipeIngredientWriteSerializer(many=True)
+    tags = serializers.PrimaryKeyRelatedField(
+        many=True, queryset=Tag.objects.all()
+    )
+    image = Base64ImageField()
+
+    class Meta:
+        model = Recipe
+        fields = (
+            'ingredients', 'tags', 'image', 'name', 'text', 'cooking_time'
+        )
+
+    def create(self, validated_data):
+        ingredients = validated_data.pop('ingredients')
+        tags = validated_data.pop('tags')
+
+        recipe = Recipe.objects.create(**validated_data)
+
+        for tag in tags:
+            RecipeTag.objects.create(recipe=recipe, tag=tag)
+        for ingredient in ingredients:
+            RecipeIngredient.objects.create(
+                ingredient=ingredient.get('id'),
+                amount=ingredient.get('amount'), recipe=recipe
+            )
+
+        return recipe
+
+    def to_representation(self, instance):
+        serializer = RecipeReadSerializer(instance, context=self.context)
+        return serializer.data

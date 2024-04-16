@@ -55,7 +55,7 @@ Authorization: Token 1ff3793e8ea6a0ade3641253e4c2a996ca10167e
 }
 
 ### subscribe on user
-POST http://127.0.0.1:8000/api/users/2/subscribe/
+POST http://127.0.0.1:8000/api/users/1/subscribe/
 Content-Type: application/json
 Authorization: Token ca091311bf78bf0fd5d32dde2cfaa35f054a3765
 
@@ -79,5 +79,41 @@ Authorization: Token ca091311bf78bf0fd5d32dde2cfaa35f054a3765
 
 ### get tag
 GET http://127.0.0.1:8000/api/tags/1/
+Content-Type: application/json
+Authorization: Token ca091311bf78bf0fd5d32dde2cfaa35f054a3765
+
+### get ingredients
+GET http://127.0.0.1:8000/api/ingredients/
+Content-Type: application/json
+Authorization: Token ca091311bf78bf0fd5d32dde2cfaa35f054a3765
+
+### get detail ingredient
+GET http://127.0.0.1:8000/api/ingredients/1/
+Content-Type: application/json
+Authorization: Token ca091311bf78bf0fd5d32dde2cfaa35f054a3765
+
+### create recipe
+POST http://127.0.0.1:8000/api/recipes/
+Content-Type: application/json
+Authorization: Token ca091311bf78bf0fd5d32dde2cfaa35f054a3765
+
+{
+  "ingredients": [
+    {
+      "id": 1,
+      "amount": 10
+    }
+  ],
+  "tags": [
+    1
+  ],
+  "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABAgMAAABieywaAAAACVBMVEUAAAD///9fX1/S0ecCAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAACklEQVQImWNoAAAAggCByxOyYQAAAABJRU5ErkJggg==",
+  "name": "Рецепт 1",
+  "text": "Описание рецепта 1",
+  "cooking_time": 1
+}
+
+### get recipes
+GET http://127.0.0.1:8000/api/recipes/
 Content-Type: application/json
 Authorization: Token ca091311bf78bf0fd5d32dde2cfaa35f054a3765
