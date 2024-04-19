@@ -117,3 +117,34 @@ Authorization: Token ca091311bf78bf0fd5d32dde2cfaa35f054a3765
 GET http://127.0.0.1:8000/api/recipes/
 Content-Type: application/json
 Authorization: Token ca091311bf78bf0fd5d32dde2cfaa35f054a3765
+
+### get detail recipe
+GET http://127.0.0.1:8000/api/recipes/147/
+Content-Type: application/json
+Authorization: Token ca091311bf78bf0fd5d32dde2cfaa35f054a3765
+
+### update full recipe
+PATCH http://127.0.0.1:8000/api/recipes/147/
+Content-Type: application/json
+Authorization: Token ca091311bf78bf0fd5d32dde2cfaa35f054a3765
+
+{
+  "ingredients": [
+    {
+      "id": 1,
+      "amount": 10
+    }
+  ],
+  "tags": [
+    1
+  ],
+  "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABAgMAAABieywaAAAACVBMVEUAAAD///9fX1/S0ecCAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAACklEQVQImWNoAAAAggCByxOyYQAAAABJRU5ErkJggg==",
+  "name": "Рецепт обновление",
+  "text": "Описание рецепта обновление",
+  "cooking_time": 2
+}
+
+### delete recipe
+DELETE http://127.0.0.1:8000/api/recipes/147/
+Content-Type: application/json
+Authorization: Token ca091311bf78bf0fd5d32dde2cfaa35f054a3765
