@@ -138,7 +138,7 @@ class IngredientReadSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ingredient
         fields = (
-            'name', 'measurement_unit', 'amount',
+            'id', 'name', 'measurement_unit', 'amount',
         )
 
     def get_amount(self, obj):
