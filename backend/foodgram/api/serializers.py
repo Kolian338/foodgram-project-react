@@ -132,7 +132,7 @@ class TagSerializer(serializers.ModelSerializer):
         )
 
 
-class IngredientSerializer(serializers.ModelSerializer):
+class IngredientReadSerializer(serializers.ModelSerializer):
     amount = serializers.SerializerMethodField()
 
     class Meta:
@@ -162,7 +162,7 @@ class RecipeReadSerializer(
     """Сериализатор для чтения /api/recipes/"""
     tags = TagSerializer(many=True)
     author = CustomUserSerializer()
-    ingredients = IngredientSerializer(many=True)
+    ingredients = IngredientReadSerializer(many=True)
 
     class Meta:
         model = Recipe

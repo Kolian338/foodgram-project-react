@@ -119,12 +119,12 @@ Content-Type: application/json
 Authorization: Token ca091311bf78bf0fd5d32dde2cfaa35f054a3765
 
 ### get detail recipe
-GET http://127.0.0.1:8000/api/recipes/147/
+GET http://127.0.0.1:8000/api/recipes/148/
 Content-Type: application/json
 Authorization: Token ca091311bf78bf0fd5d32dde2cfaa35f054a3765
 
 ### update full recipe
-PATCH http://127.0.0.1:8000/api/recipes/147/
+PATCH http://127.0.0.1:8000/api/recipes/148/
 Content-Type: application/json
 Authorization: Token ca091311bf78bf0fd5d32dde2cfaa35f054a3765
 
@@ -132,6 +132,10 @@ Authorization: Token ca091311bf78bf0fd5d32dde2cfaa35f054a3765
   "ingredients": [
     {
       "id": 1,
+      "amount": 10
+    },
+    {
+      "id": 2,
       "amount": 10
     }
   ],
