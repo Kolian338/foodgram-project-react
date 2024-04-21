@@ -132,17 +132,18 @@ class TagSerializer(serializers.ModelSerializer):
         )
 
 
-class IngredientReadSerializer(serializers.ModelSerializer):
-    amount = serializers.SerializerMethodField()
+class RecipeIngredientReadSerializer(serializers.ModelSerializer):
+    id = serializers.ReadOnlyField(source='ingredient.id')
+    name = serializers.ReadOnlyField(source='ingredient.name')
+    measurement_unit = serializers.ReadOnlyField(
+        source='ingredient.measurement_unit'
+    )
 
     class Meta:
-        model = Ingredient
+        model = RecipeIngredient
         fields = (
             'id', 'name', 'measurement_unit', 'amount',
         )
-
-    def get_amount(self, obj):
-        return 1
 
 
 class RecipeIngredientWriteSerializer(serializers.ModelSerializer):
@@ -159,10 +160,15 @@ class RecipeIngredientWriteSerializer(serializers.ModelSerializer):
 class RecipeReadSerializer(
     IsFavoridtedMixin, IsInShoppingCartMixin, serializers.ModelSerializer
 ):
-    """Сериализатор для чтения /api/recipes/"""
+    """
+    Сериализатор для чтения /api/recipes/
+    ingredients - передаются записи из таблицы RecipeIngredient от ингридиента.
+    """
     tags = TagSerializer(many=True)
     author = CustomUserSerializer()
-    ingredients = IngredientReadSerializer(many=True)
+    ingredients = RecipeIngredientReadSerializer(
+        many=True, source='recipes_ingredients'
+    )
 
     class Meta:
         model = Recipe

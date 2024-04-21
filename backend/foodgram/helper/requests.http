@@ -132,11 +132,11 @@ Authorization: Token ca091311bf78bf0fd5d32dde2cfaa35f054a3765
   "ingredients": [
     {
       "id": 1,
-      "amount": 10
+      "amount": 11
     },
     {
       "id": 2,
-      "amount": 10
+      "amount": 12
     }
   ],
   "tags": [
