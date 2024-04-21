@@ -4,7 +4,8 @@ from djoser.views import UserViewSet
 from api.permissions import AuthenticatedUser
 from rest_framework.permissions import AllowAny, IsAuthenticatedOrReadOnly
 from api.serializers import CustomUserCreateSerializer, SubscribeSerializer, \
-    TagSerializer, RecipeIngredientReadSerializer, RecipeWriteSerializer, RecipeReadSerializer
+    TagSerializer, RecipeIngredientReadSerializer, RecipeWriteSerializer, \
+    RecipeReadSerializer, IngredientSerializer
 from users.models import User, Subscription
 from recipes.models import Tag, Ingredient, Recipe
 from rest_framework import viewsets
@@ -79,7 +80,7 @@ class TagViewSet(viewsets.ReadOnlyModelViewSet):
 
 class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Ingredient.objects.all()
-    serializer_class = RecipeIngredientReadSerializer
+    serializer_class = IngredientSerializer
     pagination_class = None
 
 
