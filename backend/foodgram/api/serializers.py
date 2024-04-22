@@ -7,7 +7,7 @@ from rest_framework import request
 
 from users.models import User, Subscription
 from recipes.models import (
-    Tag, Ingredient, Recipe, RecipeIngredient, RecipeTag
+    Tag, Ingredient, Recipe, RecipeIngredient, RecipeTag, Favorite
 )
 from rest_framework import serializers
 
@@ -90,9 +90,32 @@ class CustomUserSerializer(IsSubscribedMixin, CustomUserCreateSerializer):
         read_only_fields = ('id',)
 
 
-class SubscribeSerializer(IsSubscribedMixin, serializers.ModelSerializer):
-    recipes = ...
+class RecipeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Recipe
+        fields = (
+            'id', 'name', 'image', 'cooking_time',
+        )
+        read_only_fields = ('id', 'name', 'image', 'cooking_time',)
 
+
+class RecipeUserSerializer(CustomUserSerializer, serializers.ModelSerializer):
+    recipes = RecipeSerializer(many=True)
+    recipes_count = serializers.SerializerMethodField()
+
+    class Meta:
+        model = User
+        fields = (
+            'email', 'id', 'username', 'password', 'first_name', 'last_name',
+            'is_subscribed', 'recipes', 'recipes_count',
+        )
+
+    def get_recipes_count(self, obj):
+        test = len(obj.recipes.all())
+        return test
+
+
+class SubscribeSerializer(IsSubscribedMixin, serializers.ModelSerializer):
     class Meta:
         model = Subscription
         fields = ('author', 'user', 'is_subscribed',)
@@ -241,5 +264,15 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
         return instance
 
     def to_representation(self, instance):
-        serializer = RecipeReadSerializer(instance, context=self.context)
-        return serializer.data
+        return RecipeReadSerializer(instance, context=self.context).data
+
+
+class FavoriteWriteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Favorite
+        fields = (
+            'user', 'recipe',
+        )
+
+    def to_representation(self, instance):
+        return RecipeSerializer(instance.recipe).data
