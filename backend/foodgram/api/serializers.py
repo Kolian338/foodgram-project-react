@@ -29,13 +29,6 @@ class IsSubscribedMixin(metaclass=serializers.SerializerMetaclass):
                 ).exists())
 
 
-class IsFavoridtedMixin(metaclass=serializers.SerializerMetaclass):
-    is_favorited = serializers.SerializerMethodField()
-
-    def get_is_favorited(self, obj):
-        return True
-
-
 class IsInShoppingCartMixin(metaclass=serializers.SerializerMetaclass):
     is_in_shopping_cart = serializers.SerializerMethodField()
 
@@ -189,7 +182,7 @@ class RecipeIngredientWriteSerializer(serializers.ModelSerializer):
 
 
 class RecipeReadSerializer(
-    IsFavoridtedMixin, IsInShoppingCartMixin, serializers.ModelSerializer
+    IsInShoppingCartMixin, serializers.ModelSerializer
 ):
     """
     Сериализатор для чтения /api/recipes/
@@ -200,6 +193,7 @@ class RecipeReadSerializer(
     ingredients = RecipeIngredientReadSerializer(
         many=True, source='recipes_ingredients'
     )
+    is_favorited = serializers.SerializerMethodField()
 
     class Meta:
         model = Recipe
@@ -207,6 +201,11 @@ class RecipeReadSerializer(
             'id', 'tags', 'author', 'ingredients', 'is_favorited',
             'is_in_shopping_cart', 'name', 'image', 'text', 'cooking_time',
         )
+
+    def get_is_favorited(self, obj):
+        return obj.favorites.filter(
+            user=self.context.get('request').user
+        ).exists()
 
 
 class RecipeWriteSerializer(serializers.ModelSerializer):

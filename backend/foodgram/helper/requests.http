@@ -62,7 +62,7 @@ Authorization: Token ca091311bf78bf0fd5d32dde2cfaa35f054a3765
 
 
 ### unsubscribe on user
-DELETE http://127.0.0.1:8000/api/users/1/subscribe/
+DELETE http://127.0.0.1:8000/api/users/2/subscribe/
 Content-Type: application/json
 Authorization: Token ca091311bf78bf0fd5d32dde2cfaa35f054a3765 # test
 #Authorization: Token 7dda1a9f4e5bc8b08f36da4aeb39fc03c4802f94 # test4
@@ -158,7 +158,7 @@ POST http://127.0.0.1:8000/api/recipes/148/favorite/
 Content-Type: application/json
 Authorization: Token ca091311bf78bf0fd5d32dde2cfaa35f054a3765
 
-### added recipe to favorite
+### delete recipe from favorite
 DELETE http://127.0.0.1:8000/api/recipes/148/favorite/
 Content-Type: application/json
 Authorization: Token ca091311bf78bf0fd5d32dde2cfaa35f054a3765
