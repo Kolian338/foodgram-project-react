@@ -1,3 +1,5 @@
+from django.db.models import Sum
+from django.http import HttpResponse
 from rest_framework.generics import get_object_or_404
 from djoser.views import UserViewSet
 
@@ -8,10 +10,11 @@ from api.serializers import (
     TagSerializer, RecipeIngredientReadSerializer,
     RecipeWriteSerializer,
     RecipeReadSerializer, IngredientSerializer,
-    RecipeUserSerializer, FavoriteWriteSerializer
+    RecipeUserSerializer, FavoriteWriteSerializer, ShoppingCartWriteSerializer
 )
 from users.models import User, Subscription
-from recipes.models import Tag, Ingredient, Recipe, Favorite
+from recipes.models import Tag, Ingredient, Recipe, Favorite, ShoppingCart, \
+    RecipeIngredient
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -119,6 +122,55 @@ class RecipeViewSet(viewsets.ModelViewSet):
             favorite.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
         return Response(status=status.HTTP_400_BAD_REQUEST)
+
+    @action(methods=['post'], detail=True)
+    def shopping_cart(self, request, pk=None):
+        recipe = self.get_object()
+        user = self.request.user
+        serializer = ShoppingCartWriteSerializer(
+            data={'user': user.id, 'recipe': recipe.id}
+        )
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    @shopping_cart.mapping.delete
+    def remove_from_shopping_cart(self, request, pk=None):
+        recipe = self.get_object()
+        shopping_cart = ShoppingCart.objects.filter(
+            recipe=recipe, user=self.request.user
+        )
+
+        if shopping_cart:
+            shopping_cart.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=False, methods=['get'])
+    def download_shopping_cart(self, request):
+        result = RecipeIngredient.objects.filter(
+            recipe__shopping_cart__user=self.request.user
+        ).values(
+            'ingredient__name', 'ingredient__measurement_unit'
+        ).annotate(
+            total_amount=Sum('amount')
+        ).order_by(
+            'ingredient__name'
+        )
+        result_list = []
+        for ingredient in result:
+            name = ingredient['ingredient__name']
+            total_amount = ingredient['total_amount']
+            measurement_unit = ingredient['ingredient__measurement_unit']
+            result_list.append(
+                f"{name} - {total_amount} {measurement_unit} \n"
+            )
+
+        response = HttpResponse(result_list, content_type='text/plain')
+        response['Content-Disposition'] = (
+            f'attachment; filename="testfilename"'
+        )
+        return response
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)

@@ -7,7 +7,8 @@ from rest_framework import request
 
 from users.models import User, Subscription
 from recipes.models import (
-    Tag, Ingredient, Recipe, RecipeIngredient, RecipeTag, Favorite
+    Tag, Ingredient, Recipe, RecipeIngredient, RecipeTag, Favorite,
+    ShoppingCart
 )
 from rest_framework import serializers
 
@@ -269,6 +270,17 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
 class FavoriteWriteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Favorite
+        fields = (
+            'user', 'recipe',
+        )
+
+    def to_representation(self, instance):
+        return RecipeSerializer(instance.recipe).data
+
+
+class ShoppingCartWriteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ShoppingCart
         fields = (
             'user', 'recipe',
         )

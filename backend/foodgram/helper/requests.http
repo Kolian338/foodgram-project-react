@@ -162,3 +162,18 @@ Authorization: Token ca091311bf78bf0fd5d32dde2cfaa35f054a3765
 DELETE http://127.0.0.1:8000/api/recipes/148/favorite/
 Content-Type: application/json
 Authorization: Token ca091311bf78bf0fd5d32dde2cfaa35f054a3765
+
+### added recipe to shopping cart
+POST http://127.0.0.1:8000/api/recipes/149/shopping_cart/
+Content-Type: application/json
+Authorization: Token ca091311bf78bf0fd5d32dde2cfaa35f054a3765
+
+### remove recipe from shopping cart
+DELETE http://127.0.0.1:8000/api/recipes/148/shopping_cart/
+Content-Type: application/json
+Authorization: Token ca091311bf78bf0fd5d32dde2cfaa35f054a3765
+
+### download from shopping cart
+GET http://127.0.0.1:8000/api/recipes/download_shopping_cart/
+Content-Type: application/json
+Authorization: Token ca091311bf78bf0fd5d32dde2cfaa35f054a3765
