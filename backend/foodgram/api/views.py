@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from rest_framework.generics import get_object_or_404
 from djoser.views import UserViewSet
 
-from api.permissions import AuthenticatedUser
+from api.permissions import AuthenticatedUserOrReadOnly
 from rest_framework.permissions import AllowAny, IsAuthenticatedOrReadOnly
 from api.serializers import (
     CustomUserCreateSerializer, SubscribeSerializer,
@@ -31,12 +31,13 @@ class CustomUserViewSet(UserViewSet):
         return User.objects.all()
 
     def get_permissions(self):
-        if self.action == 'retrieve':
-            return (AuthenticatedUser(),)
+        if self.action == 'retrieve' or self.action == 'list':
+            return (AuthenticatedUserOrReadOnly(),)
         return super().get_permissions()
 
     @action(
         methods=['post'], detail=True,
+        permission_classes=[AuthenticatedUserOrReadOnly]
     )
     def subscribe(self, request, id=None):
         """
@@ -65,6 +66,7 @@ class CustomUserViewSet(UserViewSet):
 
     @action(
         methods=['get'], detail=False,
+        permission_classes=[AuthenticatedUserOrReadOnly]
     )
     def subscriptions(self, request):
         subscribers = User.objects.filter(

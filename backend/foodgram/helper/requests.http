@@ -4,7 +4,7 @@ Content-Type: application/json
 
 {
     "password": "123456qwertY!",
-    "username": "test4"
+    "email": "test4"
 }
 
 ### delete token auth
@@ -14,7 +14,7 @@ Authorization: Token 654fa6eb7b0fdf8160968b9cedc1efd9171cabbd
 
 {
     "password": "123456qwertY!!",
-    "username": "test2"
+    "email": "test2"
 }
 
 ### user registration
@@ -22,22 +22,22 @@ POST http://127.0.0.1:8000/api/users/
 Content-Type: application/json
 
 {
-  "email": "test@ya.ru",
-  "username": "test4",
-  "first_name": "testname1",
-  "last_name": "lastname1",
-  "password": "123456qwertY!"
+    "email": "vpupkin@yandex.ru",
+    "username": "vasya.pupkin",
+    "first_name": "Вася",
+    "last_name": "Пупкин",
+    "password": "MySecretPas$word"
 }
 
 ### get users list
 GET http://127.0.0.1:8000/api/users/
 Content-Type: application/json
-Authorization: Token ca091311bf78bf0fd5d32dde2cfaa35f054a3765
+
 
 ### profile user
-GET http://127.0.0.1:8000/api/users/1/
+GET http://127.0.0.1:8000/api/users/12/
 Content-Type: application/json
-Authorization: Token ca091311bf78bf0fd5d32dde2cfaa35f054a3765
+
 
 ### get current user
 GET http://127.0.0.1:8000/api/users/me/
@@ -175,5 +175,4 @@ Authorization: Token ca091311bf78bf0fd5d32dde2cfaa35f054a3765
 
 ### download from shopping cart
 GET http://127.0.0.1:8000/api/recipes/download_shopping_cart/
-Content-Type: application/json
 Authorization: Token ca091311bf78bf0fd5d32dde2cfaa35f054a3765
