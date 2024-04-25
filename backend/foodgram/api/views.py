@@ -2,6 +2,7 @@ from django.db.models import Sum
 from django.http import HttpResponse
 from rest_framework.generics import get_object_or_404
 from djoser.views import UserViewSet
+from rest_framework.pagination import LimitOffsetPagination
 
 from api.permissions import AuthenticatedUserOrReadOnly
 from rest_framework.permissions import AllowAny, IsAuthenticatedOrReadOnly
@@ -26,6 +27,7 @@ class CustomUserViewSet(UserViewSet):
     Кастомный вьюсет наследованный от базового djoser.
     Сериализатор берется из settings.
     """
+    pagination_class = LimitOffsetPagination
 
     def get_queryset(self):
         return User.objects.all()

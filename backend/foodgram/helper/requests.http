@@ -23,7 +23,7 @@ Content-Type: application/json
 
 {
     "email": "vpupkin@yandex.ru",
-    "username": "vasya.pupkin",
+    "username": "vasya.pupkin12345",
     "first_name": "Вася",
     "last_name": "Пупкин",
     "password": "MySecretPas$word"
@@ -33,9 +33,16 @@ Content-Type: application/json
 GET http://127.0.0.1:8000/api/users/
 Content-Type: application/json
 
+### get users list with limit
+GET http://127.0.0.1:8000/api/users/?limit=1
+Content-Type: application/json
+
+### get users list with page
+GET http://127.0.0.1:8000/api/users/?page=1
+Content-Type: application/json
 
 ### profile user
-GET http://127.0.0.1:8000/api/users/12/
+GET http://127.0.0.1:8000/api/users/1/
 Content-Type: application/json
 
 

@@ -1,7 +1,7 @@
 from rest_framework.permissions import (BasePermission, SAFE_METHODS)
 
 
-class AuthenticatedUser(BasePermission):
+class AuthenticatedUserOrReadOnly(BasePermission):
     """
     Читать могут все.
     Авторизованный юзер может редактировать/удалять только своё.
