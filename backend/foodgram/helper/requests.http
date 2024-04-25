@@ -107,7 +107,7 @@ Authorization: Token ca091311bf78bf0fd5d32dde2cfaa35f054a3765
 ### create recipe
 POST http://127.0.0.1:8000/api/recipes/
 Content-Type: application/json
-Authorization: Token 353cca29c34c17bf65941fc579724b62b7d102af
+Authorization: Token b15b9d39fb0c2c27d70e1576ddde99555cfad6f4
 
 {
   "ingredients": [
