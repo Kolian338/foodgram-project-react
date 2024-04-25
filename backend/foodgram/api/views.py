@@ -1,9 +1,12 @@
 from django.db.models import Sum
 from django.http import HttpResponse
+from django_filters.rest_framework.backends import DjangoFilterBackend
 from rest_framework.generics import get_object_or_404
 from djoser.views import UserViewSet
-from rest_framework.pagination import LimitOffsetPagination
+from rest_framework.pagination import LimitOffsetPagination, PageNumberPagination
+from rest_framework import filters
 
+from api.filters import IngredientFilter, RecipeFilter
 from api.permissions import AuthenticatedUserOrReadOnly
 from rest_framework.permissions import AllowAny, IsAuthenticatedOrReadOnly
 from api.serializers import (
@@ -94,10 +97,15 @@ class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
     pagination_class = None
+    filter_backends = (DjangoFilterBackend,)
+    filterset_class = IngredientFilter
 
 
 class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
+    filter_backends = (DjangoFilterBackend,)
+    filterset_class = RecipeFilter
+    pagination_class = LimitOffsetPagination
 
     def get_serializer_class(self):
         if self.request.method == 'GET':

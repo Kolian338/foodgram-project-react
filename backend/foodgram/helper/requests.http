@@ -3,8 +3,8 @@ POST http://127.0.0.1:8000/api/auth/token/login/
 Content-Type: application/json
 
 {
-    "password": "123456qwertY!",
-    "email": "test4"
+    "password": "MySecretPas$word",
+    "email": "vpupkin@yandex.ru"
 }
 
 ### delete token auth
@@ -23,9 +23,9 @@ Content-Type: application/json
 
 {
     "email": "vpupkin@yandex.ru",
-    "username": "vasya.pupkin12345",
-    "first_name": "Вася",
-    "last_name": "Пупкин",
+    "username": "EmailInUse",
+    "first_name": "Email",
+    "last_name": "InUse",
     "password": "MySecretPas$word"
 }
 
@@ -92,6 +92,11 @@ Authorization: Token ca091311bf78bf0fd5d32dde2cfaa35f054a3765
 ### get ingredients
 GET http://127.0.0.1:8000/api/ingredients/
 Content-Type: application/json
+Authorization: Token 240e5ebe82e63fc48c4d8453bfd6d06ad1255fd3
+
+### get ingredients by name
+GET http://127.0.0.1:8000/api/ingredients/?name=Я
+Content-Type: application/json
 Authorization: Token ca091311bf78bf0fd5d32dde2cfaa35f054a3765
 
 ### get detail ingredient
@@ -102,7 +107,7 @@ Authorization: Token ca091311bf78bf0fd5d32dde2cfaa35f054a3765
 ### create recipe
 POST http://127.0.0.1:8000/api/recipes/
 Content-Type: application/json
-Authorization: Token ca091311bf78bf0fd5d32dde2cfaa35f054a3765
+Authorization: Token 353cca29c34c17bf65941fc579724b62b7d102af
 
 {
   "ingredients": [
@@ -123,7 +128,17 @@ Authorization: Token ca091311bf78bf0fd5d32dde2cfaa35f054a3765
 ### get recipes
 GET http://127.0.0.1:8000/api/recipes/
 Content-Type: application/json
+
+
+### get recipes with limit
+GET http://127.0.0.1:8000/api/recipes/?limit=2
+Content-Type: application/json
+
+### get recipes by author
+GET http://127.0.0.1:8000/api/recipes/?author=47
+Content-Type: application/json
 Authorization: Token ca091311bf78bf0fd5d32dde2cfaa35f054a3765
+
 
 ### get detail recipe
 GET http://127.0.0.1:8000/api/recipes/148/

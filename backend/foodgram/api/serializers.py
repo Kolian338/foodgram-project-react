@@ -30,13 +30,6 @@ class IsSubscribedMixin(metaclass=serializers.SerializerMetaclass):
                 ).exists())
 
 
-class IsInShoppingCartMixin(metaclass=serializers.SerializerMetaclass):
-    is_in_shopping_cart = serializers.SerializerMethodField()
-
-    def get_is_in_shopping_cart(self, obj):
-        return True
-
-
 class Base64ImageField(serializers.ImageField):
     """
     Кастомное поле для декодирования картинки.
@@ -182,9 +175,7 @@ class RecipeIngredientWriteSerializer(serializers.ModelSerializer):
         )
 
 
-class RecipeReadSerializer(
-    IsInShoppingCartMixin, serializers.ModelSerializer
-):
+class RecipeReadSerializer(serializers.ModelSerializer):
     """
     Сериализатор для чтения /api/recipes/
     ingredients - передаются записи из таблицы RecipeIngredient от ингридиента.
@@ -195,6 +186,7 @@ class RecipeReadSerializer(
         many=True, source='recipes_ingredients'
     )
     is_favorited = serializers.SerializerMethodField()
+    is_in_shopping_cart = serializers.SerializerMethodField()
 
     class Meta:
         model = Recipe
@@ -204,8 +196,21 @@ class RecipeReadSerializer(
         )
 
     def get_is_favorited(self, obj):
+        request = self.context.get('request')
+        if request is None or request.user.is_anonymous:
+            return False
+
         return obj.favorites.filter(
-            user=self.context.get('request').user
+            user=request.user
+        ).exists()
+
+    def get_is_in_shopping_cart(self, obj):
+        request = self.context.get('request')
+        if request is None or request.user.is_anonymous:
+            return False
+
+        return ShoppingCart.objects.filter(
+            user=request.user
         ).exists()
 
 
