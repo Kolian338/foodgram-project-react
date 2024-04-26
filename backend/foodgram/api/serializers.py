@@ -165,7 +165,9 @@ class RecipeIngredientReadSerializer(serializers.ModelSerializer):
 
 
 class RecipeIngredientWriteSerializer(serializers.ModelSerializer):
-    id = serializers.PrimaryKeyRelatedField(queryset=Ingredient.objects.all())
+    id = serializers.PrimaryKeyRelatedField(
+        queryset=Ingredient.objects.all(), source='ingredient'
+    )
 
     class Meta:
         model = RecipeIngredient
@@ -215,7 +217,7 @@ class RecipeReadSerializer(serializers.ModelSerializer):
 
 class RecipeWriteSerializer(serializers.ModelSerializer):
     ingredients = RecipeIngredientWriteSerializer(
-        many=True, allow_empty=False
+        many=True, allow_empty=False,
     )
     tags = serializers.PrimaryKeyRelatedField(
         many=True, queryset=Tag.objects.all()
@@ -228,6 +230,29 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
             'ingredients', 'tags', 'image', 'name', 'text', 'cooking_time'
         )
 
+    def validate_ingredients(self, ingredients):
+        if not ingredients:
+            raise serializers.ValidationError(
+                'Нет ингридиентов!'
+            )
+
+        ingredient_list = []
+        for ingredient in ingredients:
+            ingredient_list.append(ingredient.get('ingredient'))
+
+        if len(set(ingredient_list)) != len(ingredient_list):
+            raise serializers.ValidationError(
+                'Ингредиенты должны быть уникальными!'
+            )
+        return ingredients
+
+    def validate_tags(self, tags):
+        if not tags:
+            raise serializers.ValidationError(
+                'Тэги не могут быть пустыми!'
+            )
+        return tags
+
     def create(self, validated_data):
         ingredients = validated_data.pop('ingredients')
         tags = validated_data.pop('tags')
@@ -238,7 +263,7 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
             RecipeTag.objects.create(recipe=recipe, tag=tag)
         for ingredient in ingredients:
             RecipeIngredient.objects.create(
-                ingredient=ingredient.get('id'),
+                ingredient=ingredient.get('ingredient'),
                 amount=ingredient.get('amount'),
                 recipe=recipe
             )
