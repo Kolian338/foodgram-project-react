@@ -107,7 +107,7 @@ Authorization: Token ca091311bf78bf0fd5d32dde2cfaa35f054a3765
 ### create recipe
 POST http://127.0.0.1:8000/api/recipes/
 Content-Type: application/json
-Authorization: Token 1130b40f925d0b5c13a8220e95913974fb2f1a4d
+Authorization: Token 9f172b8fa13a85459861d78af045828ad5a77736
 
 {
   "ingredients": [
@@ -146,23 +146,16 @@ Content-Type: application/json
 Authorization: Token ca091311bf78bf0fd5d32dde2cfaa35f054a3765
 
 ### update full recipe
-PATCH http://127.0.0.1:8000/api/recipes/148/
+PATCH http://127.0.0.1:8000/api/recipes/162/
 Content-Type: application/json
-Authorization: Token ca091311bf78bf0fd5d32dde2cfaa35f054a3765
+Authorization: Token 9f172b8fa13a85459861d78af045828ad5a77736
 
 {
   "ingredients": [
     {
       "id": 1,
-      "amount": 11
-    },
-    {
-      "id": 2,
-      "amount": 12
+      "amount": 25
     }
-  ],
-  "tags": [
-    1
   ],
   "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABAgMAAABieywaAAAACVBMVEUAAAD///9fX1/S0ecCAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAACklEQVQImWNoAAAAggCByxOyYQAAAABJRU5ErkJggg==",
   "name": "Рецепт обновление",

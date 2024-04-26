@@ -10,6 +10,10 @@ class Tag(models.Model):
     color = models.CharField('Цвет в HEX', max_length=6, unique=True)
     slug = models.SlugField(max_length=200, unique=True)
 
+    class Meta:
+        verbose_name = 'Тэг'
+        verbose_name_plural = 'Тэги'
+
     def __str__(self):
         return self.name
 
@@ -79,6 +83,14 @@ class RecipeTag(models.Model):
         Tag, on_delete=models.CASCADE,
         related_name='recipes_tags'
     )
+
+    class Meta:
+        constraints = [
+            UniqueConstraint(
+                fields=['recipe', 'tag'],
+                name='unique_recipe_tag'
+            )
+        ]
 
     def __str__(self):
         return f'{self.recipe} {self.tag}'

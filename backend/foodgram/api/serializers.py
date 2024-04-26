@@ -251,6 +251,10 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 'Тэги не могут быть пустыми!'
             )
+
+        tag_ids = [tag.id for tag in tags]
+        if len(set(tag_ids)) != len(tag_ids):
+            raise serializers.ValidationError('Теги должны быть уникальными!')
         return tags
 
     def create(self, validated_data):
@@ -278,19 +282,23 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
             'cooking_time', instance.cooking_time
         )
         ingredients_valid = validated_data.pop('ingredients', None)
+        self.validate_ingredients(ingredients_valid)
+
         tags_valid = validated_data.pop('tags', None)
-        instance.tags.set(tags_valid)
+        self.validate_tags(tags_valid)
+        if tags_valid is not None:
+            instance.tags.set(tags_valid)
 
         if ingredients_valid is not None:
             instance.ingredients.clear()
 
-        for ingredient in ingredients_valid:
-            RecipeIngredient.objects.create(
-                recipe=instance,
-                ingredient=ingredient.get('id'),
-                amount=ingredient.get('amount'),
-            )
-        instance.save()
+            for ingredient in ingredients_valid:
+                RecipeIngredient.objects.create(
+                    recipe=instance,
+                    ingredient=ingredient.get('ingredient'),
+                    amount=ingredient.get('amount'),
+                )
+            instance.save()
 
         return instance
 
