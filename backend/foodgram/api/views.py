@@ -1,31 +1,31 @@
 from django.db.models import Sum
+from django.http import Http404
 from django.http import HttpResponse
 from django_filters.rest_framework.backends import DjangoFilterBackend
-from rest_framework.generics import get_object_or_404
 from djoser.views import UserViewSet
-from rest_framework.pagination import LimitOffsetPagination, \
-    PageNumberPagination
-from rest_framework import filters
-from django.http import Http404
+from rest_framework import status
+from rest_framework import viewsets
+from rest_framework.decorators import action
+from rest_framework.generics import get_object_or_404
+from rest_framework.pagination import (
+    LimitOffsetPagination
+)
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 
 from api.filters import IngredientFilter, RecipeFilter
 from api.permissions import AuthenticatedUserOrReadOnly
-from rest_framework.permissions import AllowAny, IsAuthenticatedOrReadOnly
 from api.serializers import (
-    CustomUserCreateSerializer, SubscribeSerializer,
-    TagSerializer, RecipeIngredientReadSerializer,
-    RecipeWriteSerializer,
+    SubscribeSerializer,
+    TagSerializer, RecipeWriteSerializer,
     RecipeReadSerializer, IngredientSerializer,
     RecipeUserSerializer, FavoriteWriteSerializer, ShoppingCartWriteSerializer
 )
-from users.models import User, Subscription
-from recipes.models import Tag, Ingredient, Recipe, Favorite, ShoppingCart, \
+from recipes.models import (
+    Tag, Ingredient, Recipe, Favorite, ShoppingCart,
     RecipeIngredient
-from rest_framework import viewsets
-from rest_framework.decorators import action
-from rest_framework.response import Response
-from rest_framework import status
-from rest_framework.permissions import IsAuthenticated
+)
+from users.models import User, Subscription
 
 
 class CustomUserViewSet(UserViewSet):
@@ -66,9 +66,15 @@ class CustomUserViewSet(UserViewSet):
 
     @subscribe.mapping.delete
     def unsubscribe(self, request, id=None):
-        subscription = get_object_or_404(
-            Subscription, author_id=id, user_id=request.user.id
-        )
+        author = get_object_or_404(User, id=id)
+        try:
+            subscription = get_object_or_404(
+                Subscription, author_id=author, user_id=request.user.id
+            )
+        except Http404:
+            return Response("Нет такой подписки!",
+                            status=status.HTTP_400_BAD_REQUEST)
+
         subscription.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
@@ -115,6 +121,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
         if self.request.method == 'GET':
             return RecipeReadSerializer
         return RecipeWriteSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)
 
     @action(
         methods=['post'], detail=True,
@@ -202,6 +211,3 @@ class RecipeViewSet(viewsets.ModelViewSet):
             f'attachment; filename="testfilename"'
         )
         return response
-
-    def perform_create(self, serializer):
-        serializer.save(author=self.request.user)

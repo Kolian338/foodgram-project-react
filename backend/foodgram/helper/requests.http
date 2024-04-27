@@ -71,8 +71,7 @@ Authorization: Token 7421c9775baa2994273ccea720f3fe42a5246314
 ### unsubscribe on user
 DELETE http://127.0.0.1:8000/api/users/2/subscribe/
 Content-Type: application/json
-Authorization: Token ca091311bf78bf0fd5d32dde2cfaa35f054a3765 # test
-#Authorization: Token 7dda1a9f4e5bc8b08f36da4aeb39fc03c4802f94 # test4
+Authorization: Token d9fe481befefada110394fd727e2ef98974b7b13
 
 ### get list subscribtions
 GET http://127.0.0.1:8000/api/users/subscriptions/?recipes_limit=1
@@ -107,7 +106,7 @@ Authorization: Token ca091311bf78bf0fd5d32dde2cfaa35f054a3765
 ### create recipe
 POST http://127.0.0.1:8000/api/recipes/
 Content-Type: application/json
-Authorization: Token 8b1114d99f3ce5933476c9b955e31a4d5311f35b
+Authorization: Token 9888037d6c1fd232cf9bf7e77a7c0c655c56d1b6
 
 {
   "ingredients": [
@@ -130,6 +129,12 @@ GET http://127.0.0.1:8000/api/recipes/
 Content-Type: application/json
 
 
+### get recipes
+GET http://127.0.0.1:8000/api/recipes/?is_in_shopping_cart=1
+Content-Type: application/json
+
+
+
 ### get recipes with limit
 GET http://127.0.0.1:8000/api/recipes/?limit=1
 Content-Type: application/json
@@ -148,7 +153,7 @@ Authorization: Token ca091311bf78bf0fd5d32dde2cfaa35f054a3765
 ### update full recipe
 PATCH http://127.0.0.1:8000/api/recipes/162/
 Content-Type: application/json
-Authorization: Token 9f172b8fa13a85459861d78af045828ad5a77736
+Authorization: Token 9888037d6c1fd232cf9bf7e77a7c0c655c56d1b6
 
 {
   "ingredients": [
@@ -179,9 +184,9 @@ Content-Type: application/json
 Authorization: Token ca091311bf78bf0fd5d32dde2cfaa35f054a3765
 
 ### added recipe to shopping cart
-POST http://127.0.0.1:8000/api/recipes/202/shopping_cart/
+POST http://127.0.0.1:8000/api/recipes/239/shopping_cart/
 Content-Type: application/json
-Authorization: Token 65fdc29433e3f213742843f77ba878e2a243be90
+Authorization: Token e483f1dc326ff1033029af9a3ea4a917ef4554dd
 
 ### remove recipe from shopping cart
 DELETE http://127.0.0.1:8000/api/recipes/148/shopping_cart/
