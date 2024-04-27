@@ -87,7 +87,7 @@ class RecipeSerializer(serializers.ModelSerializer):
 
 
 class RecipeUserSerializer(CustomUserSerializer, serializers.ModelSerializer):
-    recipes = RecipeSerializer(many=True)
+    recipes = serializers.SerializerMethodField()
     recipes_count = serializers.SerializerMethodField()
 
     class Meta:
@@ -96,6 +96,20 @@ class RecipeUserSerializer(CustomUserSerializer, serializers.ModelSerializer):
             'email', 'id', 'username', 'password', 'first_name', 'last_name',
             'is_subscribed', 'recipes', 'recipes_count',
         )
+
+    def get_recipes(self, obj):
+        request = self.context.get('request')
+        recipes_limit = None
+
+        if request:
+            recipes_limit = request.query_params.get('recipes_limit')
+        recipes = obj.recipes.all()
+
+        if recipes_limit:
+            recipes = recipes[:int(recipes_limit)]
+
+        serializer = RecipeSerializer(recipes, many=True, context=self.context)
+        return serializer.data
 
     def get_recipes_count(self, obj):
         test = len(obj.recipes.all())
