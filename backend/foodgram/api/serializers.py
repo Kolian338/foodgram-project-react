@@ -119,19 +119,7 @@ class SubscribeSerializer(IsSubscribedMixin, serializers.ModelSerializer):
         return attrs
 
     def to_representation(self, instance):
-        representation = super().to_representation(instance)
-        request = self.context.get('request')
-        if request:
-            user = request.user
-            representation = {
-                'email': user.email,
-                'id': user.id,
-                'username': user.username,
-                "first_name": user.first_name,
-                "last_name": user.last_name,
-                "is_subscribed": self.get_is_subscribed(instance.author)
-            }
-        return representation
+        return RecipeUserSerializer(instance.author, context=self.context).data
 
 
 class TagSerializer(serializers.ModelSerializer):

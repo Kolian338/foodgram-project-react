@@ -77,7 +77,7 @@ Authorization: Token ca091311bf78bf0fd5d32dde2cfaa35f054a3765 # test
 ### get list subscribtions
 GET http://127.0.0.1:8000/api/users/subscriptions/
 Content-Type: application/json
-Authorization: Token ca091311bf78bf0fd5d32dde2cfaa35f054a3765
+Authorization: Token ba468edc2a89c80260720a2a4540290c1213a919
 
 ### get tags
 GET http://127.0.0.1:8000/api/tags/
@@ -107,7 +107,7 @@ Authorization: Token ca091311bf78bf0fd5d32dde2cfaa35f054a3765
 ### create recipe
 POST http://127.0.0.1:8000/api/recipes/
 Content-Type: application/json
-Authorization: Token 9f172b8fa13a85459861d78af045828ad5a77736
+Authorization: Token ba468edc2a89c80260720a2a4540290c1213a919
 
 {
   "ingredients": [
