@@ -3,8 +3,10 @@ from django.http import HttpResponse
 from django_filters.rest_framework.backends import DjangoFilterBackend
 from rest_framework.generics import get_object_or_404
 from djoser.views import UserViewSet
-from rest_framework.pagination import LimitOffsetPagination, PageNumberPagination
+from rest_framework.pagination import LimitOffsetPagination, \
+    PageNumberPagination
 from rest_framework import filters
+from django.http import Http404
 
 from api.filters import IngredientFilter, RecipeFilter
 from api.permissions import AuthenticatedUserOrReadOnly
@@ -23,6 +25,7 @@ from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
 
 
 class CustomUserViewSet(UserViewSet):
@@ -113,9 +116,16 @@ class RecipeViewSet(viewsets.ModelViewSet):
             return RecipeReadSerializer
         return RecipeWriteSerializer
 
-    @action(methods=['post'], detail=True)
+    @action(
+        methods=['post'], detail=True,
+        permission_classes=(IsAuthenticated,)
+    )
     def favorite(self, request, pk=None):
-        recipe = self.get_object()
+        try:
+            recipe = self.get_object()
+        except Http404:
+            return Response("Нет такого рецепта",
+                            status=status.HTTP_400_BAD_REQUEST)
         user = self.request.user
         serializer = FavoriteWriteSerializer(
             data={'user': user.id, 'recipe': recipe.id}
@@ -136,9 +146,17 @@ class RecipeViewSet(viewsets.ModelViewSet):
             return Response(status=status.HTTP_204_NO_CONTENT)
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
-    @action(methods=['post'], detail=True)
-    def shopping_cart(self, request, pk=None):
-        recipe = self.get_object()
+    @action(
+        methods=['post'], detail=True,
+        permission_classes=(IsAuthenticated,)
+    )
+    def shopping_cart(self, request, pk):
+        try:
+            recipe = self.get_object()
+        except Http404:
+            return Response("Нет такого рецепта",
+                            status=status.HTTP_400_BAD_REQUEST)
+
         user = self.request.user
         serializer = ShoppingCartWriteSerializer(
             data={'user': user.id, 'recipe': recipe.id}
