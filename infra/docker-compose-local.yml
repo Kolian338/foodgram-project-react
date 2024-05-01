@@ -1,15 +1,21 @@
-version: '3.3'
+version: '3.7'
+
+volumes:
+  static_value:
+  media_value:
+  db_value:
+
 services:
 
   db:
-    image: postgres:13.0-alpine
+    image: postgres:13.10
     volumes:
       - db_value:/var/lib/postgresql/data/
     env_file:
       - ../backend/foodgram/.env
 
   web:
-    image: kolian338/foodgram_backend:latest
+    build: ../backend
     restart: always
     volumes:
       - static_value:/app/static/
@@ -18,9 +24,17 @@ services:
       - db
     env_file:
       - ../backend/foodgram/.env
+    command: >
+      sh -c "python manage.py collectstatic --noinput &&
+             python manage.py makemigrations &&
+             python manage.py migrate &&
+             python manage.py import_csv_command --path recipes/management/commands/data/ingredients.csv &&
+             gunicorn foodgram.wsgi:application --bind 0:8000"
 
   frontend:
-    image: kolian338/foodgram_frontend:latest
+    build:
+      context: ../frontend
+      dockerfile: Dockerfile
     volumes:
       - ../frontend/:/app/result_build/
     depends_on:
@@ -40,8 +54,3 @@ services:
       - web
       - frontend
     restart: always
-
-volumes:
-  static_value:
-  media_value:
-  db_value:

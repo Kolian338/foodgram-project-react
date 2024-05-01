@@ -4,7 +4,7 @@ Content-Type: application/json
 
 {
     "password": "MySecretPas$word",
-    "email": "second_user@email.org"
+    "email": "vpupkin@yandex.ru"
 }
 
 ### delete token auth
@@ -106,7 +106,7 @@ Authorization: Token ca091311bf78bf0fd5d32dde2cfaa35f054a3765
 ### create recipe
 POST http://127.0.0.1:8000/api/recipes/
 Content-Type: application/json
-Authorization: Token 9888037d6c1fd232cf9bf7e77a7c0c655c56d1b6
+Authorization: Token de6e875dc8bbcafa63bd445c9fa3b7fbc86bfd79
 
 {
   "ingredients": [
