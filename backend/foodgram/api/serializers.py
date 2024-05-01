@@ -1,16 +1,14 @@
 import base64
+
 from django.core.files.base import ContentFile
+from djoser.serializers import UserCreateSerializer
+from rest_framework import serializers
 
-from djoser.serializers import UserSerializer, UserCreateSerializer
-from rest_framework.validators import UniqueTogetherValidator
-from rest_framework import request
-
-from users.models import User, Subscription
 from recipes.models import (
     Tag, Ingredient, Recipe, RecipeIngredient, RecipeTag, Favorite,
     ShoppingCart
 )
-from rest_framework import serializers
+from users.models import User, Subscription
 
 
 class IsSubscribedMixin(metaclass=serializers.SerializerMetaclass):
