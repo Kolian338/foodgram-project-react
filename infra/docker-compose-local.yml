@@ -12,7 +12,7 @@ services:
     volumes:
       - db_value:/var/lib/postgresql/data/
     env_file:
-      - ../backend/foodgram/.env
+      - .env
 
   web:
     build: ../backend
@@ -23,7 +23,7 @@ services:
     depends_on:
       - db
     env_file:
-      - ../backend/foodgram/.env
+      - .env
     command: >
       sh -c "python manage.py collectstatic --noinput &&
              python manage.py makemigrations &&
