@@ -9,7 +9,7 @@ services:
       - ./.env
 
   web:
-    image: kolian338/foodgram_backend:latest
+    image: kolian338/foodgram_backend
     restart: always
     volumes:
       - static_value:/app/static/
@@ -26,7 +26,7 @@ services:
              gunicorn foodgram.wsgi:application --bind 0:8000"
 
   frontend:
-    image: kolian338/foodgram_frontend:latest
+    image: kolian338/foodgram_frontend
     volumes:
       - ../frontend/:/app/result_build/
     depends_on:
