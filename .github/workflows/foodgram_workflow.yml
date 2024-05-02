@@ -68,7 +68,7 @@ jobs:
           script: |
             cd food_gram
             sudo docker compose stop
-            sudo docker compose rm web
+            sudo docker compose rm web frontend
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/foodgram_backend
             touch .env
             echo DB_ENGINE=${{ secrets.DB_ENGINE }} >> .env

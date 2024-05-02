@@ -9,7 +9,8 @@ services:
       - ./.env
 
   web:
-    image: kolian338/foodgram_backend
+    image: kolian338/foodgram_backend:latest
+
     restart: always
     volumes:
       - static_value:/app/static/
@@ -22,11 +23,11 @@ services:
       sh -c "python manage.py collectstatic --noinput &&
              python manage.py makemigrations &&
              python manage.py migrate &&
-             python manage.py import_csv_command --path recipes/management/commands/data/ingredients.csv &&
              gunicorn foodgram.wsgi:application --bind 0:8000"
 
   frontend:
-    image: kolian338/foodgram_frontend
+    image: kolian338/foodgram_frontend:latest
+
     volumes:
       - ../frontend/:/app/result_build/
     depends_on:
