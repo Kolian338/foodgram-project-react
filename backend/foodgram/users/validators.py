@@ -1,5 +1,4 @@
 from django.core.exceptions import ValidationError
-from django.contrib.auth import validators
 
 
 def validate_username(value):
