@@ -3,10 +3,13 @@ from django.db import models
 from django.db.models import UniqueConstraint
 
 from users.models import User
+from recipes import constants
 
 
 class Tag(models.Model):
-    name = models.CharField('Название', max_length=200, unique=True)
+    name = models.CharField(
+        'Название', max_length=constants.MAX_NAME_LENGTH, unique=True
+    )
     color = models.CharField('Цвет в HEX', max_length=6, unique=True)
     slug = models.SlugField(max_length=200, unique=True)
 
