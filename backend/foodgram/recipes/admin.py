@@ -22,12 +22,13 @@ class TagAdmin(admin.ModelAdmin):
 
 class RecipeIngredientInline(admin.TabularInline):
     model = RecipeIngredient
+    min_num = 1
 
 
 @admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
     list_display = ['pk', 'name', 'author', 'favorites']
-    search_fields = ['name', 'author']
+    search_fields = ['name', 'author__username']
     list_filter = ['name', 'author', 'tags']
     empty_value_display = '-----'
     inlines = [
@@ -35,7 +36,7 @@ class RecipeAdmin(admin.ModelAdmin):
     ]
 
     def favorites(self, obj):
-        return Favorite.objects.filter(recipe=obj).count()
+        return obj.favorites.count()
 
 
 @admin.register(RecipeIngredient)
