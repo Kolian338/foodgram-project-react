@@ -4,11 +4,9 @@ from django.core.files.base import ContentFile
 from djoser.serializers import UserCreateSerializer
 from rest_framework import serializers
 
-from recipes.models import (
-    Tag, Ingredient, Recipe, RecipeIngredient, RecipeTag, Favorite,
-    ShoppingCart
-)
-from users.models import User, Subscription
+from recipes.models import (Favorite, Ingredient, Recipe, RecipeIngredient,
+                            RecipeTag, ShoppingCart, Tag)
+from users.models import Subscription, User
 
 
 class IsSubscribedMixin(metaclass=serializers.SerializerMetaclass):
