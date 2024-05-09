@@ -1,21 +1,22 @@
 from rest_framework import permissions
-from rest_framework.permissions import SAFE_METHODS, BasePermission
+from rest_framework.permissions import BasePermission
 
 
-class AuthenticatedUserOrReadOnly(BasePermission):
+class Author(BasePermission):
     """
-    Читать могут все.
-    Авторизованный юзер может редактировать/удалять только своё.
+    Пользовательский класс разрешений.
     """
-
-    def has_permission(self, request, view):
-        return bool(
-            request.method in SAFE_METHODS
-            or request.user.is_authenticated
-        )
 
     def has_object_permission(self, request, view, obj):
+        """
+        Возвращает `True` если есть рашрешение иначе `False`.
+
+        Параметры:
+        request - запрос
+        view - представление
+        obj - объект к которому нужен доступ
+        """
+
         return (request.method in permissions.SAFE_METHODS
-                or request.user.is_superuser
                 or request.user.is_staff
                 or obj.author == request.user)

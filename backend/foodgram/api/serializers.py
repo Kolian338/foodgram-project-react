@@ -1,17 +1,14 @@
-import base64
-
-from django.core.files.base import ContentFile
-from djoser.serializers import UserCreateSerializer
+from djoser.serializers import (
+    UserCreateSerializer as UserCreateSerializerDjoser)
 from rest_framework import serializers
 
+from drf_extra_fields.fields import Base64ImageField
 from recipes.models import (Favorite, Ingredient, Recipe, RecipeIngredient,
                             RecipeTag, ShoppingCart, Tag)
 from users.models import Subscription, User
 
 
 class IsSubscribedMixin(metaclass=serializers.SerializerMetaclass):
-    """
-    """
     is_subscribed = serializers.SerializerMethodField()
 
     def get_is_subscribed(self, obj):
@@ -21,48 +18,21 @@ class IsSubscribedMixin(metaclass=serializers.SerializerMetaclass):
         """
         current_user = self.context.get('request').user
         return (current_user.is_authenticated
-                and Subscription.objects.filter(
-                    author__id=obj.id, user_id=current_user.id
-                ).exists())
+                and obj.subscribing.filter(user=current_user).exists())
 
 
-class Base64ImageField(serializers.ImageField):
-    """
-    Кастомное поле для декодирования картинки.
-    """
-
-    def to_internal_value(self, data):
-        if isinstance(data, str) and data.startswith('data:image'):
-            format, imgstr = data.split(';base64,')
-            ext = format.split('/')[-1]
-
-            data = ContentFile(base64.b64decode(imgstr), name='temp.' + ext)
-
-        return super().to_internal_value(data)
-
-
-class CustomUserCreateSerializer(UserCreateSerializer):
-    """
-    Кастомный сериализатор от модели.
-    - POST /api/users/
-    -
-    """
+class UserCreateSerializer(UserCreateSerializerDjoser):
+    """Сериализатор записи/чтения с моделью User."""
 
     class Meta:
         model = User
         fields = (
             'email', 'id', 'username', 'password', 'first_name', 'last_name',
         )
-        read_only_fields = ('id',)
 
 
-class CustomUserSerializer(IsSubscribedMixin, CustomUserCreateSerializer):
-    """
-    Сериализатор для:
-    - GET /api/users/
-    - GET /api/users/1/
-    - GET /api/users/me/
-    """
+class UserSerializer(IsSubscribedMixin, UserCreateSerializer):
+    """Сериализатор чтения с моделью User."""
 
     class Meta:
         model = User
@@ -70,7 +40,6 @@ class CustomUserSerializer(IsSubscribedMixin, CustomUserCreateSerializer):
             'email', 'id', 'username', 'password', 'first_name', 'last_name',
             'is_subscribed',
         )
-        read_only_fields = ('id',)
 
 
 class RecipeSerializer(serializers.ModelSerializer):
@@ -79,10 +48,9 @@ class RecipeSerializer(serializers.ModelSerializer):
         fields = (
             'id', 'name', 'image', 'cooking_time',
         )
-        read_only_fields = ('id', 'name', 'image', 'cooking_time',)
 
 
-class RecipeUserSerializer(CustomUserSerializer, serializers.ModelSerializer):
+class RecipeUserSerializer(UserSerializer, serializers.ModelSerializer):
     recipes = serializers.SerializerMethodField()
     recipes_count = serializers.SerializerMethodField()
 
@@ -180,7 +148,7 @@ class RecipeReadSerializer(serializers.ModelSerializer):
     ingredients - передаются записи из таблицы RecipeIngredient от ингридиента.
     """
     tags = TagSerializer(many=True)
-    author = CustomUserSerializer()
+    author = UserSerializer()
     ingredients = RecipeIngredientReadSerializer(
         many=True, source='recipes_ingredients'
     )
@@ -256,10 +224,11 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
         return tags
 
     def create(self, validated_data):
+        author = self.context.get('request').user
         ingredients = validated_data.pop('ingredients')
         tags = validated_data.pop('tags')
 
-        recipe = Recipe.objects.create(**validated_data)
+        recipe = Recipe.objects.create(**validated_data, author=author)
 
         for tag in tags:
             RecipeTag.objects.create(recipe=recipe, tag=tag)

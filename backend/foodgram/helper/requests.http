@@ -4,7 +4,7 @@ Content-Type: application/json
 
 {
     "password": "MySecretPas$word",
-    "email": "vpupkin@yandex.ru"
+    "email": "vpupkin2@yandex.ru"
 }
 
 ### delete token auth
@@ -23,7 +23,7 @@ Content-Type: application/json
 
 {
     "email": "vpupkin2@yandex.ru",
-    "username": "me",
+    "username": "nikolay",
     "first_name": "Email",
     "last_name": "InUse",
     "password": "MySecretPas$word"
@@ -32,6 +32,7 @@ Content-Type: application/json
 ### get users list
 GET http://127.0.0.1:8000/api/users/
 Content-Type: application/json
+Authorization: Token ff9631f99bb53d8afc2bbd3f0088467b4996737d
 
 ### get users list with limit
 GET http://127.0.0.1:8000/api/users/?limit=1
@@ -42,8 +43,9 @@ GET http://127.0.0.1:8000/api/users/?page=1
 Content-Type: application/json
 
 ### profile user
-GET http://127.0.0.1:8000/api/users/1/
+GET http://127.0.0.1:8000/api/users/9/
 Content-Type: application/json
+Authorization: Token ff9631f99bb53d8afc2bbd3f0088467b4996737d
 
 
 ### get current user
@@ -62,9 +64,9 @@ Authorization: Token 1ff3793e8ea6a0ade3641253e4c2a996ca10167e
 }
 
 ### subscribe on user
-POST http://127.0.0.1:8000/api/users/1/subscribe/
+POST http://127.0.0.1:8000/api/users/9/subscribe/
 Content-Type: application/json
-Authorization: Token 7421c9775baa2994273ccea720f3fe42a5246314
+Authorization: Token ff9631f99bb53d8afc2bbd3f0088467b4996737d
 
 
 
@@ -195,4 +197,4 @@ Authorization: Token ca091311bf78bf0fd5d32dde2cfaa35f054a3765
 
 ### download from shopping cart
 GET http://127.0.0.1:8000/api/recipes/download_shopping_cart/
-Authorization: Token ca091311bf78bf0fd5d32dde2cfaa35f054a3765
+Authorization: Token a4540dd255a6123a66e52c3eb64e77cc834915f3

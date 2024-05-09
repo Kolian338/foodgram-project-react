@@ -1,16 +1,17 @@
 from django.db.models import Sum
 from django.http import Http404, HttpResponse
 from django_filters.rest_framework.backends import DjangoFilterBackend
-from djoser.views import UserViewSet
+from djoser.views import UserViewSet as BaseUserViewSet
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
 from rest_framework.pagination import LimitOffsetPagination
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import (IsAuthenticated,
+                                        IsAuthenticatedOrReadOnly)
 from rest_framework.response import Response
 
 from api.filters import IngredientFilter, RecipeFilter
-from api.permissions import AuthenticatedUserOrReadOnly
+from api.permissions import Author
 from api.serializers import (FavoriteWriteSerializer, IngredientSerializer,
                              RecipeReadSerializer, RecipeUserSerializer,
                              RecipeWriteSerializer,
@@ -19,13 +20,10 @@ from api.serializers import (FavoriteWriteSerializer, IngredientSerializer,
 from recipes.models import (Favorite, Ingredient, Recipe, RecipeIngredient,
                             ShoppingCart, Tag)
 from users.models import Subscription, User
+from recipes import constants
 
 
-class CustomUserViewSet(UserViewSet):
-    """
-    Кастомный вьюсет наследованный от базового djoser.
-    Сериализатор берется из settings.
-    """
+class UserViewSet(BaseUserViewSet):
     pagination_class = LimitOffsetPagination
 
     def get_queryset(self):
@@ -33,18 +31,14 @@ class CustomUserViewSet(UserViewSet):
 
     def get_permissions(self):
         if self.action == 'retrieve' or self.action == 'list':
-            return (AuthenticatedUserOrReadOnly(),)
+            return (IsAuthenticatedOrReadOnly(),)
         return super().get_permissions()
 
     @action(
         methods=['post'], detail=True,
-        permission_classes=[AuthenticatedUserOrReadOnly]
+        permission_classes=[Author, IsAuthenticatedOrReadOnly]
     )
     def subscribe(self, request, id=None):
-        """
-        - Подписка на юзера.
-        - Удаление подписки.
-        """
         author = get_object_or_404(
             User, pk=id
         )
@@ -73,7 +67,7 @@ class CustomUserViewSet(UserViewSet):
 
     @action(
         methods=['get'], detail=False,
-        permission_classes=[AuthenticatedUserOrReadOnly]
+        permission_classes=[Author, IsAuthenticatedOrReadOnly]
     )
     def subscriptions(self, request):
         subscribers = User.objects.filter(
@@ -105,7 +99,7 @@ class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
 
 class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
-    permission_classes = (AuthenticatedUserOrReadOnly,)
+    permission_classes = (Author, IsAuthenticatedOrReadOnly)
     filter_backends = (DjangoFilterBackend,)
     filterset_class = RecipeFilter
     pagination_class = LimitOffsetPagination
@@ -114,9 +108,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
         if self.request.method == 'GET':
             return RecipeReadSerializer
         return RecipeWriteSerializer
-
-    def perform_create(self, serializer):
-        serializer.save(author=self.request.user)
 
     @action(
         methods=['post'], detail=True,
@@ -182,7 +173,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=['get'])
     def download_shopping_cart(self, request):
         result = RecipeIngredient.objects.filter(
-            recipe__shopping_cart__user=self.request.user
+            recipe__shopping_carts__user=self.request.user
         ).values(
             'ingredient__name', 'ingredient__measurement_unit'
         ).annotate(
@@ -199,7 +190,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 f"{name} - {total_amount} {measurement_unit} \n"
             )
 
-        response = HttpResponse(result_list, content_type='text/plain')
-        response['Content-Disposition'] = (
-            'attachment; filename="testfilename"')
+        return self.download_file(result_list, filename=constants.FILE_NAME)
+
+    def download_file(self, content, filename):
+        response = HttpResponse(content, content_type='text/plain')
+        response['Content-Disposition'] = f'attachment; filename="{filename}"'
         return response
