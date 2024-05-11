@@ -208,6 +208,22 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
         )
 
     def validate(self, data):
+        if not data.get('image'):
+            raise serializers.ValidationError(
+                {
+                    'image': 'Пустая картинка!'
+                }
+            )
+
+        tags_data = data.get('tags')
+        if not tags_data:
+            raise serializers.ValidationError(
+                'Тэги не могут быть пустыми!'
+            )
+
+        if len(set(tags_data)) != len(tags_data):
+            raise serializers.ValidationError('Теги должны быть уникальными!')
+
         ingredients_data = data.get('ingredients')
         if not ingredients_data:
             raise serializers.ValidationError(
@@ -228,16 +244,6 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
                 'Ингредиенты должны быть уникальными!'
             )
         return data
-
-    def validate_tags(self, tags):
-        if not tags:
-            raise serializers.ValidationError(
-                'Тэги не могут быть пустыми!'
-            )
-
-        if len(set(tags)) != len(tags):
-            raise serializers.ValidationError('Теги должны быть уникальными!')
-        return tags
 
     def create(self, validated_data):
         author = self.context.get('request').user
