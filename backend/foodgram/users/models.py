@@ -1,6 +1,7 @@
 from django.contrib.auth import validators
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+
 from users import constants
 from users.validators import validate_username
 
