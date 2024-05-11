@@ -76,9 +76,14 @@ Content-Type: application/json
 Authorization: Token d9fe481befefada110394fd727e2ef98974b7b13
 
 ### get list subscribtions
+GET http://127.0.0.1:8000/api/users/subscriptions/
+Content-Type: application/json
+Authorization: Token ff9631f99bb53d8afc2bbd3f0088467b4996737d
+
+### get list subscribtions with limit
 GET http://127.0.0.1:8000/api/users/subscriptions/?recipes_limit=1
 Content-Type: application/json
-Authorization: Token 7421c9775baa2994273ccea720f3fe42a5246314
+Authorization: Token ff9631f99bb53d8afc2bbd3f0088467b4996737d
 
 ### get tags
 GET http://127.0.0.1:8000/api/tags/
@@ -108,17 +113,21 @@ Authorization: Token ca091311bf78bf0fd5d32dde2cfaa35f054a3765
 ### create recipe
 POST http://127.0.0.1:8000/api/recipes/
 Content-Type: application/json
-Authorization: Token de6e875dc8bbcafa63bd445c9fa3b7fbc86bfd79
+Authorization: Token ff9631f99bb53d8afc2bbd3f0088467b4996737d
 
 {
   "ingredients": [
     {
-      "id": 1195,
-      "amount": 10
+      "id": 1,
+      "amount": 25
+    },
+    {
+      "id": 2,
+      "amount": 20
     }
   ],
   "tags": [
-    1
+    2
   ],
   "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABAgMAAABieywaAAAACVBMVEUAAAD///9fX1/S0ecCAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAACklEQVQImWNoAAAAggCByxOyYQAAAABJRU5ErkJggg==",
   "name": "Рецепт 1",
@@ -129,11 +138,13 @@ Authorization: Token de6e875dc8bbcafa63bd445c9fa3b7fbc86bfd79
 ### get recipes
 GET http://127.0.0.1:8000/api/recipes/
 Content-Type: application/json
+Authorization: Token ff9631f99bb53d8afc2bbd3f0088467b4996737d
 
 
 ### get recipes
 GET http://127.0.0.1:8000/api/recipes/?is_in_shopping_cart=1
 Content-Type: application/json
+Authorization: Token ff9631f99bb53d8afc2bbd3f0088467b4996737d
 
 
 
@@ -142,27 +153,34 @@ GET http://127.0.0.1:8000/api/recipes/?limit=1
 Content-Type: application/json
 
 ### get recipes by author
-GET http://127.0.0.1:8000/api/recipes/?author=47
+GET http://127.0.0.1:8000/api/recipes/?author=16
 Content-Type: application/json
-Authorization: Token ca091311bf78bf0fd5d32dde2cfaa35f054a3765
+Authorization: Token ff9631f99bb53d8afc2bbd3f0088467b4996737d
 
 
 ### get detail recipe
-GET http://127.0.0.1:8000/api/recipes/148/
+GET http://127.0.0.1:8000/api/recipes/11/
 Content-Type: application/json
-Authorization: Token ca091311bf78bf0fd5d32dde2cfaa35f054a3765
+Authorization: Token ff9631f99bb53d8afc2bbd3f0088467b4996737d
 
 ### update full recipe
-PATCH http://127.0.0.1:8000/api/recipes/162/
+PATCH http://127.0.0.1:8000/api/recipes/14/
 Content-Type: application/json
-Authorization: Token 9888037d6c1fd232cf9bf7e77a7c0c655c56d1b6
+Authorization: Token ff9631f99bb53d8afc2bbd3f0088467b4996737d
 
 {
   "ingredients": [
     {
       "id": 1,
       "amount": 25
+    },
+    {
+      "id": 2,
+      "amount": 20
     }
+  ],
+  "tags": [
+    2
   ],
   "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABAgMAAABieywaAAAACVBMVEUAAAD///9fX1/S0ecCAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAACklEQVQImWNoAAAAggCByxOyYQAAAABJRU5ErkJggg==",
   "name": "Рецепт обновление",
@@ -176,9 +194,9 @@ Content-Type: application/json
 Authorization: Token ca091311bf78bf0fd5d32dde2cfaa35f054a3765
 
 ### added recipe to favorite
-POST http://127.0.0.1:8000/api/recipes/227/favorite/
+POST http://127.0.0.1:8000/api/recipes/11/favorite/
 Content-Type: application/json
-Authorization: Token 7242cc9da8fab3582b01c7fdfc06578414b9c073
+Authorization: Token ff9631f99bb53d8afc2bbd3f0088467b4996737d
 
 ### delete recipe from favorite
 DELETE http://127.0.0.1:8000/api/recipes/148/favorite/
@@ -186,14 +204,14 @@ Content-Type: application/json
 Authorization: Token ca091311bf78bf0fd5d32dde2cfaa35f054a3765
 
 ### added recipe to shopping cart
-POST http://127.0.0.1:8000/api/recipes/239/shopping_cart/
+POST http://127.0.0.1:8000/api/recipes/11/shopping_cart/
 Content-Type: application/json
-Authorization: Token e483f1dc326ff1033029af9a3ea4a917ef4554dd
+Authorization: Token ff9631f99bb53d8afc2bbd3f0088467b4996737d
 
 ### remove recipe from shopping cart
-DELETE http://127.0.0.1:8000/api/recipes/148/shopping_cart/
+DELETE http://127.0.0.1:8000/api/recipes/11/shopping_cart/
 Content-Type: application/json
-Authorization: Token ca091311bf78bf0fd5d32dde2cfaa35f054a3765
+Authorization: Token ff9631f99bb53d8afc2bbd3f0088467b4996737d
 
 ### download from shopping cart
 GET http://127.0.0.1:8000/api/recipes/download_shopping_cart/

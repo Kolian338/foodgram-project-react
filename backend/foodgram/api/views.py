@@ -1,15 +1,3 @@
-from django.db.models import Sum
-from django.http import Http404, HttpResponse
-from django_filters.rest_framework.backends import DjangoFilterBackend
-from djoser.views import UserViewSet as BaseUserViewSet
-from rest_framework import status, viewsets
-from rest_framework.decorators import action
-from rest_framework.generics import get_object_or_404
-from rest_framework.pagination import LimitOffsetPagination
-from rest_framework.permissions import (IsAuthenticated,
-                                        IsAuthenticatedOrReadOnly)
-from rest_framework.response import Response
-
 from api.filters import IngredientFilter, RecipeFilter
 from api.permissions import Author
 from api.serializers import (FavoriteWriteSerializer, IngredientSerializer,
@@ -17,10 +5,21 @@ from api.serializers import (FavoriteWriteSerializer, IngredientSerializer,
                              RecipeWriteSerializer,
                              ShoppingCartWriteSerializer, SubscribeSerializer,
                              TagSerializer)
+from django.db.models import Sum
+from django.http import Http404, HttpResponse
+from django_filters.rest_framework.backends import DjangoFilterBackend
+from djoser.views import UserViewSet as BaseUserViewSet
+from recipes import constants
 from recipes.models import (Favorite, Ingredient, Recipe, RecipeIngredient,
                             ShoppingCart, Tag)
+from rest_framework import status, viewsets
+from rest_framework.decorators import action
+from rest_framework.generics import get_object_or_404
+from rest_framework.pagination import LimitOffsetPagination
+from rest_framework.permissions import (IsAuthenticated,
+                                        IsAuthenticatedOrReadOnly)
+from rest_framework.response import Response
 from users.models import Subscription, User
-from recipes import constants
 
 
 class UserViewSet(BaseUserViewSet):
@@ -71,7 +70,7 @@ class UserViewSet(BaseUserViewSet):
     )
     def subscriptions(self, request):
         subscribers = User.objects.filter(
-            author__user_id=request.user.id
+            subscribing__user_id=request.user.id
         )
 
         page = self.paginate_queryset(subscribers)
