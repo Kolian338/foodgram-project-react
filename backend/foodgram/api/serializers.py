@@ -2,6 +2,7 @@ from djoser.serializers import \
     UserCreateSerializer as UserCreateSerializerDjoser
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
+from rest_framework.validators import UniqueTogetherValidator
 
 from recipes import constants
 from recipes.models import (Favorite, Ingredient, Recipe, RecipeIngredient,
@@ -289,6 +290,12 @@ class FavoriteWriteSerializer(serializers.ModelSerializer):
         fields = (
             'user', 'recipe',
         )
+        validators = [
+            UniqueTogetherValidator(
+                queryset=Favorite.objects.all(),
+                fields=('user', 'recipe')
+            )
+        ]
 
     def to_representation(self, instance):
         return RecipeSerializer(instance.recipe).data
@@ -300,6 +307,12 @@ class ShoppingCartWriteSerializer(serializers.ModelSerializer):
         fields = (
             'user', 'recipe',
         )
+        validators = [
+            UniqueTogetherValidator(
+                queryset=ShoppingCart.objects.all(),
+                fields=('user', 'recipe')
+            )
+        ]
 
     def to_representation(self, instance):
         return RecipeSerializer(instance.recipe).data

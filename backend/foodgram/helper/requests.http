@@ -64,16 +64,16 @@ Authorization: Token 1ff3793e8ea6a0ade3641253e4c2a996ca10167e
 }
 
 ### subscribe on user
-POST http://127.0.0.1:8000/api/users/9/subscribe/
+POST http://127.0.0.1:8000/api/users/18/subscribe/
 Content-Type: application/json
 Authorization: Token ff9631f99bb53d8afc2bbd3f0088467b4996737d
 
 
 
 ### unsubscribe on user
-DELETE http://127.0.0.1:8000/api/users/2/subscribe/
+DELETE http://127.0.0.1:8000/api/users/18/subscribe/
 Content-Type: application/json
-Authorization: Token d9fe481befefada110394fd727e2ef98974b7b13
+Authorization: Token ff9631f99bb53d8afc2bbd3f0088467b4996737d
 
 ### get list subscribtions
 GET http://127.0.0.1:8000/api/users/subscriptions/
@@ -201,7 +201,7 @@ Authorization: Token ff9631f99bb53d8afc2bbd3f0088467b4996737d
 ### delete recipe from favorite
 DELETE http://127.0.0.1:8000/api/recipes/148/favorite/
 Content-Type: application/json
-Authorization: Token ca091311bf78bf0fd5d32dde2cfaa35f054a3765
+Authorization: Token ff9631f99bb53d8afc2bbd3f0088467b4996737d
 
 ### added recipe to shopping cart
 POST http://127.0.0.1:8000/api/recipes/11/shopping_cart/
