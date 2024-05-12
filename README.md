@@ -1,4 +1,4 @@
-![foodgram](https://github.com/kolian338/kittygram_final/actions/workflows/main.yml/badge.svg)
+![foodgram](https://github.com/kolian338/foodgram-project-react/actions/workflows/main.yml/badge.svg)
 # Foodgram - «Продуктовый помощник»
 ## Описание проекта
 Cервис, где пользователи могут публиковать рецепты, подписываться на 
