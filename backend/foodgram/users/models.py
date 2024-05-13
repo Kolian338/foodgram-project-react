@@ -9,6 +9,9 @@ from users.validators import validate_username
 class User(AbstractUser):
     """Кастомная модель юзера."""
 
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ('first_name', 'last_name', 'username',)
+
     email = models.EmailField(
         'Адрес электронной почты', max_length=constants.MAX_EMAIL_LENGTH,
         unique=True
@@ -26,11 +29,14 @@ class User(AbstractUser):
         'Юзернейм', max_length=constants.MAX_USERNAME_LENGTH,
         validators=[validate_username, validators.UnicodeUsernameValidator]
     )
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ('first_name', 'last_name', 'username',)
+
+    class Meta:
+        ordering = ['username']
+        verbose_name = 'Пользователь'
+        verbose_name_plural = 'Пользователи'
 
     def __str__(self):
-        return self.username
+        return f'{self.email} {self.username}'
 
 
 class Subscription(models.Model):
@@ -59,6 +65,7 @@ class Subscription(models.Model):
                 check=~models.Q(user=models.F('author')),
             ),
         ]
+        ordering = ['-user']
         verbose_name = 'Подписчик'
         verbose_name_plural = 'Подписчики'
 
