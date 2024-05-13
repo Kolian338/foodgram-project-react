@@ -9,7 +9,7 @@ from users.models import User
 
 class Tag(models.Model):
     name = models.CharField(
-        'Название', max_length=constants.MAX_NAME_LENGTH, unique=True
+        'Название', max_length=constants.MAX_TAG_NAME_LENGTH, unique=True
     )
     color = ColorField(
         'Цвет в HEX', max_length=constants.MAX_COLOR_LENGTH, unique=True
@@ -26,7 +26,9 @@ class Tag(models.Model):
 
 
 class Ingredient(models.Model):
-    name = models.CharField('Название', max_length=constants.MAX_NAME_LENGTH)
+    name = models.CharField(
+        'Название', max_length=constants.MAX_INGREDIENT_NAME_LENGTH
+    )
     measurement_unit = models.CharField(
         'Единицы измерения', max_length=constants.MAX_MEASUREMENT_UNIT_LENGTH
     )
@@ -51,7 +53,9 @@ class Recipe(models.Model):
         User, on_delete=models.CASCADE,
         related_name='recipes'
     )
-    name = models.CharField('Название', max_length=constants.MAX_NAME_LENGTH)
+    name = models.CharField(
+        'Название', max_length=constants.MAX_RECIPE_NAME_LENGTH
+    )
     image = models.ImageField('Изображение', upload_to='recipes/images')
     text = models.TextField('Описание')
     ingredients = models.ManyToManyField(
