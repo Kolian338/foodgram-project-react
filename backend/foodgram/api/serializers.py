@@ -1,5 +1,6 @@
-from djoser.serializers import \
+from djoser.serializers import (
     UserCreateSerializer as UserCreateSerializerDjoser
+)
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
@@ -158,10 +159,6 @@ class RecipeIngredientWriteSerializer(serializers.ModelSerializer):
 
 
 class RecipeReadSerializer(serializers.ModelSerializer):
-    """
-    Сериализатор для чтения /api/recipes/
-    ingredients - передаются записи из таблицы RecipeIngredient от ингридиента.
-    """
     tags = TagSerializer(many=True)
     author = UserSerializer()
     ingredients = RecipeIngredientReadSerializer(
@@ -232,13 +229,9 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
                 }
             )
 
-        ingredient_list = []
-        for ingredient in ingredients_data:
-            ingredient_list.append(ingredient.get('ingredient'))
-
-        ingredient_ids = (
+        ingredient_ids = [
             ingredient.get('ingredient') for ingredient in ingredients_data
-        )
+        ]
         if len(set(ingredient_ids)) != len(ingredients_data):
             raise serializers.ValidationError(
                 'Ингредиенты должны быть уникальными!'
