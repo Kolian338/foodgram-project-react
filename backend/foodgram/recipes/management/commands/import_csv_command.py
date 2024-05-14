@@ -16,10 +16,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         file_path = options['path']
         if not file_path:
-            raise ValueError(
-                'Укажите путь к CSV-файлу с ингредиентами '
-                'через аргумент --path'
-            )
+            file_path = 'recipes/management/commands/data/ingredients.csv'
 
         with open(file_path, 'r', encoding='utf-8') as csv_file:
             csv_reader = csv.reader(csv_file, delimiter=',')
