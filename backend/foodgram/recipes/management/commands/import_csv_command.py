@@ -29,7 +29,9 @@ class Command(BaseCommand):
                     )
                     ingredients.append(ingredient)
                 except ValueError:
-                    print('Ошибка при импорте ингредиента:', row)
+                    self.stderr.write(
+                        'Ошибка при импорте ингредиента: {}'.format(row)
+                    )
             Ingredient.objects.bulk_create(ingredients)
             self.stdout.write(self.style.SUCCESS(
                 'Ингредиенты успешно импортированы.')
