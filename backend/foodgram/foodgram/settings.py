@@ -7,7 +7,8 @@ load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = os.getenv('SECRET_KEY', default='django-insecure-nzq0@k%y)rhb+wt832397=(&ms2dtys-l5#9jaoxte_$v4#j4*')
+SECRET_KEY = os.getenv('SECRET_KEY',
+                       default='django-insecure-nzq0@k%y)rhb+wt832397=(&ms2dtys-l5#9jaoxte_$v4#j4*')
 
 DEBUG = True
 
@@ -27,6 +28,7 @@ INSTALLED_APPS = [
     'users.apps.UsersConfig',
     'recipes.apps.RecipesConfig',
     'api.apps.ApiConfig',
+    'colorfield',
 ]
 
 MIDDLEWARE = [
