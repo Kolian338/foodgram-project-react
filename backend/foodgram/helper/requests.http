@@ -22,8 +22,8 @@ POST http://127.0.0.1:8000/api/users/
 Content-Type: application/json
 
 {
-    "email": "vpupkin2@yandex.ru",
-    "username": "nikolay",
+    "email": "username-in-use123@user.ru",
+    "username": "vasya.pupkin",
     "first_name": "Email",
     "last_name": "InUse",
     "password": "MySecretPas$word"

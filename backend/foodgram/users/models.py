@@ -26,8 +26,8 @@ class User(AbstractUser):
         'Пароль', max_length=constants.MAX_PASSWORD_LENGTH
     )
     username = models.CharField(
-        'Юзернейм', max_length=constants.MAX_USERNAME_LENGTH,
-        validators=[validate_username, validators.UnicodeUsernameValidator]
+        'Юзернейм', max_length=constants.MAX_USERNAME_LENGTH, unique=True,
+        validators=[validate_username, validators.UnicodeUsernameValidator()]
     )
 
     class Meta:

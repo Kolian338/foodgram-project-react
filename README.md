@@ -40,7 +40,7 @@ DB_NAME=postgres
 DB_HOST=db
 DB_PORT=5432
 
-Так жя необходимо задать секреты в gihub actions:
+Так же необходимо задать секреты в gihub actions:
 ALLOWED_HOSTS=localhost 127.0.0.1
 DB_ENGINE=django.db.backends.postgresql
 DOCKER_PASSWORD=passwod
