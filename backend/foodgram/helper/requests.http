@@ -88,7 +88,7 @@ Authorization: Token ff9631f99bb53d8afc2bbd3f0088467b4996737d
 ### get tags
 GET http://127.0.0.1:8000/api/tags/
 Content-Type: application/json
-Authorization: Token ca091311bf78bf0fd5d32dde2cfaa35f054a3765
+
 
 ### get tag
 GET http://127.0.0.1:8000/api/tags/1/

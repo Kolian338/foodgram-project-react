@@ -238,6 +238,17 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
             )
         return data
 
+    def create_or_update_ingredients(self, ingredients, recipe):
+        recipe_ingredients = [
+            RecipeIngredient(
+                recipe=recipe,
+                ingredient=ingredient.get('ingredient'),
+                amount=ingredient.get('amount')
+            )
+            for ingredient in ingredients
+        ]
+        RecipeIngredient.objects.bulk_create(recipe_ingredients)
+
     def create(self, validated_data):
         author = self.context.get('request').user
         ingredients = validated_data.pop('ingredients')
@@ -246,36 +257,21 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
         recipe = Recipe.objects.create(**validated_data, author=author)
         recipe.tags.set(tags)
 
-        recipe_ingredients = [
-            RecipeIngredient(
-                ingredient=ingredient.get('ingredient'),
-                amount=ingredient.get('amount'),
-                recipe=recipe
-            )
-            for ingredient in ingredients
-        ]
-        RecipeIngredient.objects.bulk_create(recipe_ingredients)
+        self.create_or_update_ingredients(
+            ingredients=ingredients, recipe=recipe
+        )
 
         return recipe
 
     def update(self, instance, validated_data):
-        instance.name = validated_data.get('name', instance.name)
-        instance.image = validated_data.get('image', instance.image)
-        instance.text = validated_data.get('text', instance.text)
-        instance.cooking_time = validated_data.get(
-            'cooking_time', instance.cooking_time
-        )
         ingredients_valid = validated_data.pop('ingredients', None)
         tags_valid = validated_data.pop('tags', None)
         instance.tags.set(tags_valid)
         instance.ingredients.clear()
 
-        for ingredient in ingredients_valid:
-            RecipeIngredient.objects.create(
-                recipe=instance,
-                ingredient=ingredient.get('ingredient'),
-                amount=ingredient.get('amount'),
-            )
+        self.create_or_update_ingredients(
+            ingredients=ingredients_valid, recipe=instance
+        )
 
         return super().update(instance, validated_data)
 
@@ -297,7 +293,7 @@ class FavoriteWriteSerializer(serializers.ModelSerializer):
         ]
 
     def to_representation(self, instance):
-        return RecipeSerializer(instance.recipe).data
+        return RecipeSerializer(instance.recipe, context=self.context).data
 
 
 class ShoppingCartWriteSerializer(serializers.ModelSerializer):
@@ -314,4 +310,4 @@ class ShoppingCartWriteSerializer(serializers.ModelSerializer):
         ]
 
     def to_representation(self, instance):
-        return RecipeSerializer(instance.recipe).data
+        return RecipeSerializer(instance.recipe, context=self.context).data

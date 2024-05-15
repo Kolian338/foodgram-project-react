@@ -39,9 +39,28 @@ POSTGRES_PASSWORD=postgres
 DB_NAME=postgres
 DB_HOST=db
 DB_PORT=5432
+
+Так жя необходимо задать секреты в gihub actions:
+ALLOWED_HOSTS=localhost 127.0.0.1
+DB_ENGINE=django.db.backends.postgresql
+DOCKER_PASSWORD=passwod
+DOCKER_USERNAME=kolian338
+HOST=158.160.72.142
+PASSPHRASE=server_password
+SSH_KEY=ssh_key
+USER=server_name
+TELEGRAM_TO=account_id
+TELEGRAM_TOKEN=bot_token
+
+
+
 ```
 Запустить docker-compose.yml:
 ```
+Перед запуском:
+- На сервере создать папку food_gram и перенести в неё docker-compose.yml
+- И перенести nginx.conf
+
 docker compose -f docker-compose.yml up
 При локальном запуске в settings можно использовать БД sqlite
 ```
