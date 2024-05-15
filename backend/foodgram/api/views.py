@@ -170,7 +170,10 @@ class RecipeViewSet(viewsets.ModelViewSet):
             return Response(status=status.HTTP_204_NO_CONTENT)
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
-    @action(detail=False, methods=['get'])
+    @action(
+        detail=False, methods=['get'],
+        permission_classes=(IsAuthenticated,)
+    )
     def download_shopping_cart(self, request):
         result = RecipeIngredient.objects.filter(
             recipe__shopping_carts__user=self.request.user
@@ -181,16 +184,20 @@ class RecipeViewSet(viewsets.ModelViewSet):
         ).order_by(
             'ingredient__name'
         )
-        result_list = []
+
+        data = self.parse_ingredients(result)
+        return self.download_file(content=data, filename=constants.FILE_NAME)
+
+    def parse_ingredients(self, result):
+        parsed_result = []
         for ingredient in result:
             name = ingredient['ingredient__name']
             total_amount = ingredient['total_amount']
             measurement_unit = ingredient['ingredient__measurement_unit']
-            result_list.append(
+            parsed_result.append(
                 f"{name} - {total_amount} {measurement_unit} \n"
             )
-
-        return self.download_file(result_list, filename=constants.FILE_NAME)
+        return parsed_result
 
     def download_file(self, content, filename):
         response = HttpResponse(content, content_type='text/plain')
