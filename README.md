@@ -7,9 +7,9 @@ Cервис, где пользователи могут публиковать �
 приготовления одного или нескольких выбранных блюд.
 
 ## Ссылка на веб-приложение и документацию
-http://158.160.72.142/signin
-<br>
-http://158.160.72.142/api/docs/redoc.html
+[Страница входа](http://158.160.72.142/signin)
+
+[Документация](http://158.160.72.142/api/docs/redoc.html)
 
 ## Технологии
 * Python 3.9
@@ -34,26 +34,37 @@ gti clone git@github.com:Kolian338/foodgram-project-react.git
 Создать файл .evn для хранения ключей, в папке infra:
 
 ```python
-POSTGRES_USER=postgres
-POSTGRES_PASSWORD=postgres
-DB_NAME=postgres
-DB_HOST=db
-DB_PORT=5432
-
+DB_ENGINE=<django.db.backends.postgresql>
+DB_NAME=<имя базы данных postgres>
+DB_USER=<пользователь бд>
+DB_PASSWORD=<пароль>
+DB_HOST=<db>
+DB_PORT=<5432>
+SECRET_KEY=<секретный ключ проекта django>
+ALLOWED_HOSTS=<рашрешенные адреса>
+```
 Так же необходимо задать секреты в gihub actions:
-ALLOWED_HOSTS=localhost 127.0.0.1
-DB_ENGINE=django.db.backends.postgresql
-DOCKER_PASSWORD=passwod
-DOCKER_USERNAME=kolian338
-HOST=158.160.72.142
-PASSPHRASE=server_password
-SSH_KEY=ssh_key
-USER=server_name
-TELEGRAM_TO=account_id
-TELEGRAM_TOKEN=bot_token
+```
+DB_ENGINE=<django.db.backends.postgresql>
+DB_NAME=<имя базы данных postgres>
+DB_USER=<пользователь бд>
+DB_PASSWORD=<пароль>
+DB_HOST=<db>
+DB_PORT=<5432>
 
+DOCKER_PASSWORD=<пароль от DockerHub>
+DOCKER_USERNAME=<имя пользователя>
 
+SECRET_KEY=<секретный ключ проекта django>
+ALLOWED_HOSTS=<рашрешенные адреса>
 
+USER=<username для подключения к серверу>
+HOST=<IP сервера>
+PASSPHRASE=<пароль для сервера, если он установлен>
+SSH_KEY=<ваш SSH ключ (для получения команда: cat ~/.ssh/id_rsa)>
+
+TELEGRAM_TO=<ID чата, в который придет сообщение>
+TELEGRAM_TOKEN=<токен вашего бота>
 ```
 Запустить docker-compose.yml:
 ```
@@ -62,13 +73,28 @@ TELEGRAM_TOKEN=bot_token
 - И перенести nginx.conf
 
 docker compose -f docker-compose.yml up
-При локальном запуске в settings можно использовать БД sqlite
 ```
+
 Создать суперпользователя:
 ```
 docker exec -it infra_web_1 python manage.py createsuperuser
 ```
 Чтобы заполнить базу данных начальными данными списка ингридиетов выполните:
-```python
+```
 sudo docker exec infra_web_1 python manage.py import_csv_command --path recipes/management/commands/data/ingredients.csv
+```
+
+При локальном запуске в settings можно использовать БД sqlite:
+```
+- В settings добавить:
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
+
+Выполнить команды:
+- python manage.py makemigrations
+- python manage.py migrate
 ```

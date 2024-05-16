@@ -138,7 +138,7 @@ Authorization: Token 2715c3d050736b1ad444216ca7370c3e8baac3df
 ### get recipes
 GET http://127.0.0.1:8000/api/recipes/
 Content-Type: application/json
-Authorization: Token ff9631f99bb53d8afc2bbd3f0088467b4996737d
+
 
 
 ### get recipes
@@ -150,6 +150,10 @@ Authorization: Token ff9631f99bb53d8afc2bbd3f0088467b4996737d
 
 ### get recipes with limit
 GET http://127.0.0.1:8000/api/recipes/?limit=1
+Content-Type: application/json
+
+### get recipes with limit and page
+GET http://127.0.0.1:8000/api/recipes/?page=2&limit=6
 Content-Type: application/json
 
 ### get recipes by author
